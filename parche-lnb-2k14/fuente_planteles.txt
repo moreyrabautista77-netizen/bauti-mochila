@@ -1,0 +1,256 @@
+ARGENTINO (JUNÍN. BA)
+2	Joaquín Fernández	01/08/03	Paraná (ER)	1.88	Base
+4	Josh Ferguson	15/11/96	Miami, FL (EEUU)	2.03	Pivote
+5	Zyon Patterson (E)	18/05/00	Crossett. AR (EEUU)	2.01	Alero
+6	Dylan Smith (E)	06/07/97	Mobile, AL (EEUU)	1.95	Escolta
+7	Martino Caporaletti (U21)	13/04/05	Junín (BA)	1.99	Alero
+8	Piero Di Prinzio (U21)	16/02/06	Junín (BA)	1.83	Base
+11	Santiago Pérez	10/08/02	Resistencia (CHA)	1.88	Alero
+13	Leandro Cerminato	09/06/98	El Palomar (BA)	1.99	Ala pivote
+16	Rómulo Gusmao (E)	01/10/95	Brasilia (Brasil)	2.07	Pivote
+17	Cristián Cardo	17/01/99	Carlos Paz (CBA)	1.98	Alero
+20	Santiago Bilbao (U21)	04/01/05	Junín (BA)	1.98	Alero
+22	Jeremías Sandrini	03/05/93	Rosario (SF)	1.87	Base
+DT	Adrián Capelli
+ATENAS (CÓRDOBA)
+1	Benjamín Imaz (J)	06/11/07	Córdoba	1.80	Escolta
+3	Santiago Ferreyra	11/03/97	Hernándo (CBA)	1.89	Base
+6	Franco Balbi	21/08/89	Junín (BA)	1.84	Base
+8	Facundo Vázquez	23/04/98	Ciudad de Buenos Aires	1.85	Base
+10	Adonys Henríquez (E)	13/11/94	Orlando. FL (EEUU)	1.98	Alero
+12	Gonzalo Bressan	16/11/01	Córdoba	2.10	Pivote
+13	Facundo Valfre (J)	20/05/08	Río Cuarto (CBA)	1.94	Pivote
+14	Germán Misetich (U21)	03/03/05	Córdoba	1.94	Alero
+18	Tomás Cavallero	24/05/98	Ciudad de Buenos Aires	1.96	Alero
+20	Juan Pablo Arengo	05/06/96	Corrientes	1.85	Escolta
+21	Daniel Lester (E)	16/08/96	Pensacola. FL (EEUU)	2.00	Ala pivote
+22	Bryan Carabalí (E)	24/08/99	San Lorenzo. Esmeralda (Ecuador)	2.14	Pivote
+DT	Leonardo Gutiérrez
+BOCA JUNIORS (CABA)
+0	Mike Warren (E)	07/11/95	Washington DC (EEUU)	1.96	Escolta
+3	Lucas Faggiano	21/03/89	Bahía Blanca (BA)	1.88	Base
+4	Nicolás Stenta (U21)	30/01/04	Venado Tuerto (SF)	2.00	Alero
+7	Kriss Helmanis (E)	07/04/02	Leverkusen (Alemania)	2.10	Pivote
+10	José Vildoza	15/01/96	Córdoba	1.90	Base
+12	Mateo Fessia (J)	04/02/08	Sunchales (SF)	1.90	Base
+13	Tomás Monacchi	10/11/97	Mar del Plata (BA)	1.95	Escolta
+14	Valentino Finetti (U21)	05/08/05	Salta	2.05	Alero
+15	Nicholas Petri (U21)	03/02/06	Provo, Utah (EEUU)	2.13	Pivote
+17	Elías Torrens (J)	27/05/08	Capital Federal	2.03	Pivote
+19	Agustín Barreiro	02/02/99	Cañuelas (BA)	2.02	Alero
+20	Leonardo Lema	20/06/98	General Pico (LP)	2.03	Ala pivote
+22	Francisco Cáffaro	19/05/00	Piamonte (SF)	2.15	Pivote
+44	Martín Cuello	12/03/93	Ramos Mejía (BA)	1.93	Escolta
+DT	Nicolás Casalánguida
+FERRO (CABA)
+4	Emiliano Lezcano	02/05/01	Tafí Viejo (Tuc)	1.86	Base
+5	José Defelippo	26/07/97	San Nicolás (BA)	1.86	Escolta
+6	Jano Martínez (U21)	24/04/03	Bahía Blanca (BA)	1.78	Base
+8	Federico Zezular	09/11/01	Córdoba	1.98	Alero
+9	Felipe Rodríguez (U21)	12/03/03	Ciudad de Buenos Aires	1.95	Escolta
+10	Facundo Piñero	26/09/88	Mar del Plata (BA)	1.98	Alero
+12	Rodrigo Gallegos	28/01/91	Arroyo Seco (SF)	1.88	Base
+13	Camilo Rodríguez (U21)	20/03/06	Ciudad de Buenos Aires	1.90	Escolta
+14	Alejandro Diez	21/02/87	Olavarría (BA)	2.01	Ala pivote
+25	Valentín Bettiga	09/10/99	Coronel Pringles (BA)	1.93	Escolta
+32	Eduardo Vasirani	16/01/91	La Plata (BA)	2.07	Pivote
+91	Kevin Hernández	28/03/91	Ciudad de Buenos Aires	2.06	Pivote
+DT	Federico Fernández
+GIMNASIA (COMODORO RIVADAVIA. CHUBUT)
+0	Obi Okafor (E)	12/03/99	Las Vegas. NV (EEUU)	1.98	Alero
+1	Sebastián Carrasco (E)	01/11/00	Ancud (Chile)	1.80	Base
+2	Felipe Inyaco (E)	02/05/02	Penco (Chile)	1.92	Escolta
+3	Jesús Centeno (E. U21)	18/10/06	Cumaná (Venezuela)	2.00	Ala pivote
+5	Marcos Chacón (E. U21)	24/06/03	La Habana (Cuba)	1.94	Base
+6	Anyelo Cisneros (E)	31/01/97	Miranda (Venezuela)	2.00	Pivote
+9	Martiniano Dato (U21)	07/12/04	Paraná (ER)	1.88	Escolta
+11	Valentín Forestier	07/08/03	Bahía Blanca (BA)	1.94	Alero
+12	Emiliano Toretta	18/09/01	Santa Fe	1.85	Base
+14	Carlos Rivero (U21)	13/12/03	Salta	2.07	Ala pivote
+20	Amar Sylla (E)	10/01/01	Dakar (Senegal)	2.05	Pivote
+33	Benjamín Kirkwood Stevens	21/05/99	Canadá	2.08	Pivote
+88	Gino Balbo (U21)	22/06/06	Gálvez (SF)	1.90	Escolta
+DT	Pablo Favarel
+INDEPENDIENTE (OLIVA. CÓRDOBA)
+1	Agustín Cáffaro	06/02/95	Piamonte (SF)	2.05	Pivote
+2	Juan Martín Guerrero	12/03/03	San Juan	1.88	Base
+3	Gerónimo Tolosa (J)	10/11/07	Rosario (SF)	1.90	Alero
+6	Nicolás Marcucci	11/05/02	Rosario (SF)	1.90	Escolta
+7	Felipe Barrionuevo (U21)	24/03/05	Mar del Plata (BA)	1.85	Base
+8	Patricio Tabarez	26/06/91	Presidente Derqui (BA)	1.94	Alero
+9	Fortunato Rolfi	09/04/01	Resistencia (CHA)	1.86	Escolta
+10	Agustín Pautasso	06/11/97	María Juana (SF)	1.93	Alero
+11	Ezequiel Horen (U21)	18/10/05	Mendoza	2.05	Pivote
+19	Rolando Vallejos	19/10/00	Corrientes	1.95	Ala pivote
+23	Andriy Grytsak (E)	12/06/00	Ivano-Frankivsk (Ucrania)	2.00	Alero
+27	Enzo Filippetti	27/05/01	Junín (BA)	2.01	Pivote
+DT	Martín González
+INSTITUTO (CÓRDOBA)
+1	Leandro Vildoza	22/02/94	Tafí Viejo (TUC)	1.80	Base
+2	Kadir Pomare (U21)	27/01/03	San Andrés (Colombia)	1.94	Alero
+5	Gastón Whelan	10/06/94	Córdoba	1.89	Base
+6	Torren Jones	28/10/94	Chicago, IL (EEUU)	2.06	Pivote
+9	Bautista Lugarini	31/01/01	San Nicolás (BA)	2.03	Alero
+10	Juan Pablo Corbalán	22/08/98	Resistencia (CHA)	1.85	Escolta
+11	Lucca Giuliani (J)	18/09/07	Paraná (ER)	1.98	Alero
+12	Federico Aguerre	27/10/88	Mendoza	2.03	Alero
+13	Vicente Garello	16/11/00	Rosario (SF)	2.00	Ala pivote
+17	Santiago Guasco (J)	19/09/07	El Bolsón (RN)	2.04	Pivote
+72	Xavier Carreras	10/09/94	Bayaguana (Dominicana)	1.98	Alero
+77	Bautista Aguilar (J)	30/01/07	Chilecito (LR)		
+DT	Sebastián González
+LA UNIÓN (FORMOSA)
+0	Brandon Beavers (E)	15/05/01	Columbus. OH (EEUU)	1.88	Escolta
+2	Tommy Nuno (E)	02/01/98	Half Moon Bay. CA (EEUU)	1.96	Alero
+3	Yerferson Guerra	07/06/03	Caracas (Venezuela)	1.92	Escolta
+4	Mariano Marina	13/05/99	Olavarria (BA)	1.85	Base
+6	Sebastián Acevedo	13/09/90	Santiago del Estero	1.98	Ala pivote
+7	Alexis Elsener	23/02/88	Villa María (CBA)	1.94	Alero
+9	Agustín Facello	18/08/99	Paraná (ER)	1.83	Base
+12	Hugo Paez (U21)	13/09/05	Ciudad del Este (Paraguay)	2.05	Pivote
+15	Windi Graterol (E)	10/09/86	Caracas (Venezuela)	2.04	Pivote
+17	Franco Alorda	24/02/99	Corrientes	2.07	Pivote
+20	Facundo Mariano (U21)	09/12/05	Olavarría (BA)	2.00	Ala pivote
+21	Augusto Moresco (U21)	28/09/05	Rosario (SF)	1.88	Alero
+DT	Guillermo Narvarte
+LANÚS (LANÚS. BA)
+3	Robert Whitfield (E)	30/03/97	Raleigh, NC (EEUU)	1.90	Escolta
+5	Juan Brussino	14/10/91	Cañada de Gómez (SF)	1.85	Base
+7	Martín Franchino	16/08/93	Lanús (BA)	1.98	Ala pivote
+9	Edgar Merchant	04/09/02	Zárate (BA)	2.00	Alero
+10	Alejo Sacchi (U21)	30/12/03	Lanús (BA)	1.92	Alero
+12	Christian James (E)	23/10/96	Houston, Texas (EEUU)	1.93	Alero
+	Pedro Bombino	21/03/00	Ciego de Ávila (Cuba)	2.08	Pivote
+	Fabrizio Helale	2006	Lanús (BA)	1.88	Escolta
+20	Joaquín Celíz	20/10/08	CABA	1.95	Escolta
+22	Lucas Andújar	25/11/96	Quilmes (BA)	1.87	Base
+	Francisco Varoni	2006	La Plata, BA	1.85	Base
+32	Melvin Johnson (E)	19/06/93	Bronx, NY (EEUU)	1.90	Escolta
+33	Fabián Ramírez Barrios	23/02/90	Corrientes	1.97	Ala pivote
+DT	Manuel Anglese
+OBERÁ TC (OBERÁ. MISIONES)
+1	Ty Prince (E)	23/09/99	Jacksonville, TX (EEUU)	1.98	Alero
+2	Jonatan Torresi	13/05/94	Casilda (SF)	1.91	Escolta
+4	Víctor Fernández	16/09/99	San Nicolás (BA)	1.76	Base
+7	Alejo Azpilicueta (U21)	25/04/02	Bahía Blanca (BA)	2.01	Alero
+8	Santiago Barrales	28/08/98	Chivilcoy (BA)	1.97	Alero
+10	Bruno Sansimoni	22/04/96	Olavarria (BA)	1.93	Base
+11	Agustín Brocal	09/10/97	Resistencia (CHA)	1.91	Escolta
+13	Albano Costa (U21)	28/04/06	Bahía Blanca (BA)	1.90	Base
+41	Will Vorhees (E)	18/12/95	Lima. OH (EEUU)	2.03	Ala pivote
+77	Juan Cruz Oberto	25/01/97	Las Varillas (CBA)	2.00	Ala pivote
+	Milton Mousquere (U21)	12/11/06	Oberá (MIS)	1.73	Base
+	Matheus Simao (E, U21)	08/12/06	San Pablo (Brasil)	2.06	Pivote
+DT	Fabio Demti
+OLÍMPICO (LA BANDA. SANTIAGO DEL ESTERO)
+0	Austin Wtighten (E)	04/12/96	Woodbridge, VA (EEUU)	1.93	Escolta
+1	Andrew Corum (E)	01/09/97	Leesburg. VI (EEUU)	2.01	Ala pivote
+4	Lucas Pérez	18/12/87	Viedma (RN)	1.85	Base
+6	Santino Romegialli (U21)	27/05/03	Firmat (SF)	2.04	Alero
+10	Ezequiel Paz	20/01/01	Córdoba	1.90	Base
+11	Jeremías Frontera	12/01/00	Cruz del Eje (CBA)	1.86	Base
+13	Agustín Vergara	19/03/01	Córdoba	2.00	Alero
+18	Guido Mariani	18/08/94	Rosario (SF)	1.95	Alero
+26	Joaquín López (U21)	26/05/06	Tigre (BA)	2.05	Ala pivote
+34	Hall Elisias (E)	02/01/98	Valley Stream, NY (EEUU)	2.03	Pivote
+DT	Leonardo Costa
+PEÑAROL (MAR DEL PLATA. BA)
+1	Al Thornton (E)	07/12/83	Perry. GA (EEUU)	2.03	Ala pivote
+3	Iván Basualdo	16/01/90	Santa Fe	2.03	Pivote
+4	Luciano Guerra	02/09/97	Colonia Caroya (CBA)	1.85	Base
+10	Andrés Jaime	13/03/00	Santa Fe	1.85	Base
+11	Martín Chapero (J)	24/11/07	Vera (SF)	2.02	Pivote
+15	Selem Safar	06/05/87	Mar del Plata (BA)	1.90	Escolta
+15	Nicolás Chiaraviglio (U21)	01/04/04	Sunchales (SF)	1.99	Alero
+17	Sebastián Vega	09/07/88	Gualeguaychú (ER)	2.00	Alero
+18	Agustín Pérez Tapia	19/03/99	Neuquén	1.87	Escolta
+18	Ignacio Bednarek	19/03/02	Rosario (SF)	2.04	Pivote
+19	Gonzalo Aman (J)	21/04/08	Olavarría (BA)	1.85	Base
+33	Gian Luca Rossi (U21)	07/01/05	Villa Ángela (CHA)	1.80	Base
+99	Franco Giorgetti	02/12/92	Resistencia (CHA)	2.03	Ala pivote
+DT	Leandro Ramella
+PLATENSE (VICENTE LÓPEZ. BA)
+7	Anthoan Urbina (E, U21)	07/09/05	Caracas (Venezuela)	1.90	Base
+8	Mariano Goicoechea (U21)	09/02/04	Formosa	1.95	Escolta
+9	Ramiro Santiago	16/03/99	Bahía Blanca (BA)	1.93	Base
+10	Franco Smaniotti	04/12/00	Vicente López (BA)	1.93	Escolta
+11	Federico Grun	13/11/96	Patagones (BA)	1.91	Escolta
+12	Julián Morales	01/06/95	Goya (COR)	1.95	Alero
+13	Gastón Córdoba	17/09/94	Freyre (CBA)	2.00	Ala pivote
+15	Facundo Terra (E)	14/05/98	Montevideo (Uruguay)	1.88	Base
+21	Giovanni Pappalardi (J)	26/05/07	Ciudad de Buenos Aires	2.01	Pivote
+25	Nicolás Burgos	25/07/03	Junín (BA)	2.07	Pivote
+26	Erik Copes (E)	29/01/93	Filadelphia, Pensilvania (EEUU)	2.03	Pivote
+30	Mauro Cosolito	18/12/88	Santa Fe	1.92	Alero
+DT	Martín Yangüela
+QUIMSA (SANTIAGO DEL ESTERO)
+0	Patricio Cogliati (U21)	12/12/06	Casilda (SF)	2.03	Pivote
+2	Tyren Johnson (E)	24/07/88	New Orleans, LA (EEUU)	2.03	Ala pivote
+4	Ignacio Laterza	07/05/97	Necochea (BA)	1.82	Base
+6	Nicolás Copello	11/02/92	Santa Fe	1.93	Base
+9	Francisco Conrradi	20/11/03	Hermoso Campo (CHA)	1.92	Base
+10	Matías Solanas	17/12/98	Paraná (ER)	1.93	Escolta
+12	Franco Méndez	07/03/02	Corrientes	1.85	Escolta
+22	Facundo Rutenberg	06/02/01	Tres de Febrero (BA)	1.95	Escolta
+30	Nicolás Martínez (E)	28/10/03	Montevideo (Uruguay)	2.06	Pivote
+41	Javier Saiz	26/02/94	Córdoba	2.06	Ala pivote
+77	Enzo Roth (J)	14/01/09	Oberá (MIS)	1.92	Escolta
+83	Tayavek Gallizzi	08/02/93	Santa Fe	2.06	Pivote
+DT	Lucas Victoriano
+RACING (CHIVILCOY. BA)
+2	Mateo Chiarini	04/09/98	Córdoba	1.88	Escolta
+3	Pedro Barral	20/10/94	Morón (BA)	1.87	Base
+4	Joaquín Valinotti	01/12/98	Las Rosas (SF)	1.85	Base
+6	Manuel Rodríguez	05/03/02	Neuquén (NEU)	1.97	Alero
+9	Santiago Assum	07/12/98	Río Tercero (CBA)	1.94	Alero
+12	Marcos Delía	08/04/92	Saladillo (BA)	2.08	Pivote
+13	Juan Respaud (U21)	07/07/05	Concepción del Uruguay (ER)	1.90	Base
+14	Emilio Stucky	24/04/94	Campo Quijano (SAL)	1.98	Ala pivote
+18	Tomás Delía (U21)	18/03/06	Saladillo (BA)	2.00	Pivote
+20	Juan Bocca (U21)	18/03/05	Capilla del Señor (BA)	1.98	Alero
+21	Abraham Barahona (E, U21)	25/03/03	San Lorenzo, Orellana (Ecuador)	1.95	Ala pivote
+22	Matías Morera	05/08/99	Chivilcoy (BA)	1.87	Escolta
+33	Nicolás Romano	01/11/87	Junín (BA)	2.01	Ala pivote
+DT	Diego D'Ambrosio
+REGATAS (CORRIENTES)
+1	Keith Stone (E)	25/08/97	Deerfield Beach, FL (EEUU)	2.03	Ala pivote
+3	Francisco Farabello	01/11/00	Olavarría (BA)	1.90	Base
+4	Exequiel Lezcano (J)	04/03/07	Tafi Viejo (TUC)	1.80	Base
+5	Iván Gramajo	02/02/96	Tucumán	1.93	Alero
+6	Sebastian Orresta	06/05/93	Tafi Viejo (TUC)	1.88	Base
+7	Viktor Bender (U21)	21/10/06	Corrientes	1.97	Alero
+8	Elian Centeno (E)	18/07/00	Caracas (Venezuela)	2.02	Ala pivote
+10	José Montero	02/01/95	Santiago del Estero	1.94	Escolta
+11	Francisco Ferraro (U21)	09/02/04	Saenz Peña (CHA)	1.96	Alero
+20	Alan Ledesma (U21)	14/11/06	Corrientes	1.87	Escolta
+22	Fausto Ruesga	17/07/00	Bahía Blanca (BA)	2.01	Alero
+35	Roberto Acuña	14/09/90	Rafaela (SF)	2.03	Pivote
+DT	Martín Villagrán
+SAN LORENZO (CABA)
+1	Lucas Gargallo	20/02/95	Ciudad de Buenos Aires	1.94	Alero
+2	Thiago Roca (U21)	08/06/04	Ramos Mejía (BA)	1.92	Alero
+3	Raynere Thornton (E)	14/09/95	Marietta, GA (EEUU)	2.01	Alero
+5	Valentino Nesci (U21)	05/03/04	Ciudad de Buenos Aires	2.02	Ala pivote
+6	Marcos Mata	01/08/86	Mar del Plata (BA)	2.01	Alero
+7	Nicolás Aguirre	31/03/88	Santiago del Estero	1.89	Base
+9	Santiago Calderón	16/03/02	San Jorge (SF)	1.85	Base
+10	Cli’Ron Hornbeak (E)	10/09/03	Toledo, OH (EEUU)	2.06	Pivote
+20	Leonel Schattmann	14/05/87	Viedma (RN)	1.94	Escolta
+21	Santiago Tallade (U21)	27/07/05	Aldo Bonzi, La Matanza	1.95	Alero
+23	Eric Flor	10/05/93	Merlo (BA)	1.86	Escolta
+33	Antun Maricevic (E)	07/07/97	Nova Gradiska (Croacia)	2.06	Ala pivote
+DT	Gonzalo García
+SAN MARTÍN (CORRIENTES)
+0	Diego Collomb (U21)	01/10/04	Esperanza (SF)	1.92	Escolta
+2	Juan Gorosito	16/03/03	Ceres (SF)	1.83	Escolta
+4	Salvador Giletto	08/02/93	Resistencia (CHA)	1.95	Ala pivote
+5	Gastón García	15/12/98	Reconquista (SF)	1.88	Base
+7	Daniel Moreira (E)	04/07/03	Río de Janeiro (BRA)	2.06	Pivote
+13	Gerónimo Ramallo (U21)	02/10/04	Rosario (SF)	2.00	Alero
+12	Mateo Rearte (U21)	31/03/06	Mercedes (COR)	1.83	Escolta
+15	Lautaro Berra	09/01/98	Firmat (SF)	2.08	Pivote
+16	Sebastián Lugo	26/03/98	Resistencia (CHA)	1.97	Alero
+18	Joaquín Fernández (J)	02/05/08	Corrientes	1.95	Alero
+44	Dante Saettone (J)	29/07/08	Corrientes	1.89	Base
+27	Valentino Saucedo (J)	01/02/08	Corrientes	1.94	Escolta
+DT	Gabriel Revidatti

@@ -1,19 +1,19 @@
-slot_nba_a_reemplazar,equipo_lnb,abreviatura,ciudad,motivo_del_slot
-Indiana Pacers,Boca Juniors,BOC,Buenos Aires (La Boca),camiseta azul y oro parecida
-Boston Celtics,Ferro Carril Oeste,FER,Buenos Aires (Caballito),camiseta verde
-Philadelphia 76ers,San Lorenzo,SLO,Buenos Aires (Boedo),camiseta azul y roja
-Atlanta Hawks,Argentino,ARG,Junín,libre
-Chicago Bulls,Atenas,ATE,Córdoba,libre
-Houston Rockets,Gimnasia y Esgrima,GIM,Comodoro Rivadavia,libre
-Milwaukee Bucks,Lanús,LAN,Lanús,libre
-Toronto Raptors,Independiente,IND,Oliva,libre
-Denver Nuggets,Instituto,INS,Córdoba,libre
-Washington Wizards,La Unión,LUF,Formosa,libre
-Miami Heat,Oberá Tenis Club,OTC,Oberá,libre
-Detroit Pistons,Olímpico,OLI,La Banda,libre
-Dallas Mavericks,Peñarol,PEN,Mar del Plata,libre
-Brooklyn Nets,Platense,PLA,Vicente López,libre
-New York Knicks,Quimsa,QUI,Santiago del Estero,libre
-Memphis Grizzlies,Racing,RAC,Chivilcoy,libre
-Utah Jazz,Regatas,REG,Corrientes,libre
-Orlando Magic,San Martín,SMC,Corrientes,libre
+slot_nba_a_reemplazar,equipo_lnb,abreviatura,ciudad,motivo_del_slot,entrenador
+Indiana Pacers,Boca Juniors,BOC,Buenos Aires (La Boca),camiseta azul y oro parecida,Nicolás Casalánguida
+Boston Celtics,Ferro Carril Oeste,FER,Buenos Aires (Caballito),camiseta verde,Federico Fernández
+Philadelphia 76ers,San Lorenzo,SLO,Buenos Aires (Boedo),camiseta azul y roja,Gonzalo García
+Atlanta Hawks,Argentino,ARG,Junín,libre,Adrián Capelli
+Chicago Bulls,Atenas,ATE,Córdoba,libre,Leonardo Gutiérrez
+Houston Rockets,Gimnasia y Esgrima,GIM,Comodoro Rivadavia,libre,Pablo Favarel
+Milwaukee Bucks,Lanús,LAN,Lanús,libre,Manuel Anglese
+Toronto Raptors,Independiente,IND,Oliva,libre,Martín González
+Denver Nuggets,Instituto,INS,Córdoba,libre,Sebastián González
+Washington Wizards,La Unión,LUF,Formosa,libre,Guillermo Narvarte
+Miami Heat,Oberá Tenis Club,OTC,Oberá,libre,Fabio Demti
+Detroit Pistons,Olímpico,OLI,La Banda,libre,Leonardo Costa
+Dallas Mavericks,Peñarol,PEN,Mar del Plata,libre,Leandro Ramella
+Brooklyn Nets,Platense,PLA,Vicente López,libre,Martín Yangüela
+New York Knicks,Quimsa,QUI,Santiago del Estero,libre,Lucas Victoriano
+Memphis Grizzlies,Racing,RAC,Chivilcoy,libre,Diego D'Ambrosio
+Utah Jazz,Regatas,REG,Corrientes,libre,Martín Villagrán
+Orlando Magic,San Martín,SMC,Corrientes,libre,Gabriel Revidatti
