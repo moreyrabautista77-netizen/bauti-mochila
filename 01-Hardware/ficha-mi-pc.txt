@@ -1,0 +1,133 @@
+================================================================================
+                        FICHA TÉCNICA DE EQUIPO
+================================================================================
+ N.º de ficha ......: ____________          Fecha de relevamiento: __/__/____
+ Técnico ...........: Bautista Moreyra
+ Cliente ...........: ______________________________________________________
+ Contacto ..........: ______________________________________________________
+ Tipo de equipo ....: [ ] Escritorio   [ ] Notebook   [ ] All-in-one
+ Marca / modelo ....: ______________________________________________________
+ N.º de serie ......: ______________________________________________________
+ Motivo de revisión : [ ] Relevamiento  [ ] Lentitud  [ ] Falla  [ ] Mejora
+--------------------------------------------------------------------------------
+
+Fuente de cada dato: [CPU-Z: pestaña] · [CDI] = CrystalDiskInfo
+                     [msinfo32] = Win + R → msinfo32 · [AT] = Administrador de
+                     tareas (Ctrl + Shift + Esc) → Rendimiento
+
+--------------------------------------------------------------------------------
+ 1. PROCESADOR (CPU)                                            [CPU-Z: CPU]
+--------------------------------------------------------------------------------
+ Modelo ............: ______________________________________________________
+ Socket ............: __________        Litografía (nm): ____
+ Núcleos / hilos ...: ____ / ____       Frecuencia base: ______ GHz
+ Caché L3 ..........: ______ MB
+ Gráficos integrados: [ ] Sí  [ ] No    Modelo: ____________________________
+
+--------------------------------------------------------------------------------
+ 2. PLACA MADRE Y FIRMWARE                                [CPU-Z: Mainboard]
+--------------------------------------------------------------------------------
+ Fabricante ........: ______________________________________________________
+ Modelo ............: ______________________________________________________
+ Chipset ...........: ______________________________________________________
+ BIOS: marca .......: ____________   Versión: __________   Fecha: __/__/____
+ Modo de arranque ..: [ ] UEFI  [ ] Legacy                         [msinfo32]
+ Secure Boot .......: [ ] Activado  [ ] Desactivado                [msinfo32]
+
+--------------------------------------------------------------------------------
+ 3. MEMORIA RAM                                   [CPU-Z: Memory y SPD]
+--------------------------------------------------------------------------------
+ Total instalada ...: ____ GB          Tipo: [ ] DDR3 [ ] DDR4 [ ] DDR5
+ Frecuencia ........: ______ MHz       Canal: [ ] Single  [ ] Dual
+ Ranuras usadas ....: ____ de ____                                  [AT]
+
+ Ranura | Capacidad | Fabricante      | Modelo / Part Number   | Frecuencia
+ -------+-----------+-----------------+------------------------+-----------
+   1    |           |                 |                        |
+   2    |           |                 |                        |
+   3    |           |                 |                        |
+   4    |           |                 |                        |
+
+ Máximo soportado por la placa: ____ GB (ver manual del fabricante)
+
+--------------------------------------------------------------------------------
+ 4. ALMACENAMIENTO                                                    [CDI]
+--------------------------------------------------------------------------------
+ Disco | Modelo              | Tipo (HDD/SSD SATA/NVMe) | Capacidad | Salud
+ ------+---------------------+--------------------------+-----------+--------
+   1   |                     |                          |           |    %
+   2   |                     |                          |           |    %
+
+ Disco 1: horas de uso ______  · encendidos ______  · temperatura ____ °C
+ Disco 2: horas de uso ______  · encendidos ______  · temperatura ____ °C
+ Estado según CDI ..: [ ] Bueno  [ ] Precaución  [ ] Malo
+ Espacio libre en C: ______ GB de ______ GB
+
+--------------------------------------------------------------------------------
+ 5. PLACA DE VIDEO (GPU)                                [CPU-Z: Graphics]
+--------------------------------------------------------------------------------
+ Modelo ............: ______________________________________________________
+ Tipo ..............: [ ] Integrada  [ ] Dedicada    Memoria de video: ____ GB
+ Versión del driver : ____________   Fecha del driver: __/__/____
+
+--------------------------------------------------------------------------------
+ 6. SISTEMA OPERATIVO                                   [winver / msinfo32]
+--------------------------------------------------------------------------------
+ Edición ...........: ______________________________ (ej. Windows 11 Home)
+ Versión / compilac.: ______________________________ (ej. 24H2)
+ Arquitectura ......: [ ] 64 bits  [ ] 32 bits
+ Licencia activada .: [ ] Sí  [ ] No
+ Antivirus activo ..: ______________________________________________________
+ Dispositivos con advertencia (Administrador de dispositivos): [ ] No  [ ] Sí
+   Detalle: ________________________________________________________________
+
+--------------------------------------------------------------------------------
+ 7. RED Y PERIFÉRICOS
+--------------------------------------------------------------------------------
+ Adaptador de red ..: [ ] Cable  [ ] Wi-Fi   Modelo: _______________________
+ Fuente (escritorio): ______ W   Marca: ________________ (mirar la etiqueta)
+ Monitor / pantalla : ____ pulgadas   Resolución: ____________
+
+--------------------------------------------------------------------------------
+ 8. DIAGNÓSTICO GENERAL
+--------------------------------------------------------------------------------
+ Uso de RAM en reposo (AT): ____ %    Con 15 pestañas abiertas: ____ %
+ Uso de disco en reposo (AT): ____ %
+ Temperatura de CPU en reposo: ____ °C   (HWMonitor, opcional)
+ Tiempo de arranque hasta el escritorio: ____ segundos
+
+ Observaciones:
+ ___________________________________________________________________________
+ ___________________________________________________________________________
+
+--------------------------------------------------------------------------------
+ 9. RECOMENDACIONES
+--------------------------------------------------------------------------------
+ Prioridad: ALTA = hacer ya · MEDIA = conviene · BAJA = opcional
+
+ 1) Mejora .........: ______________________________________________________
+    Prioridad ......: [ ] Alta  [ ] Media  [ ] Baja
+    Justificación ..: (qué dato de esta ficha lo respalda)
+    ________________________________________________________________________
+    Costo estimado .: $ __________
+
+ 2) Mejora .........: ______________________________________________________
+    Prioridad ......: [ ] Alta  [ ] Media  [ ] Baja
+    Justificación ..: ______________________________________________________
+    ________________________________________________________________________
+    Costo estimado .: $ __________
+
+ Criterios para decidir (borrar esta guía antes de entregar):
+  - Disco del sistema es HDD ...................... → pasar a SSD (ALTA)
+  - CDI en "Precaución" o "Malo" .................. → backup YA y cambiar disco
+  - RAM al 80 % o más con uso normal .............. → agregar RAM (MEDIA/ALTA)
+  - Un solo módulo de RAM ......................... → agregar otro igual para
+                                                      usar dual channel
+  - Menos del 15 % libre en C ..................... → limpieza o disco extra
+  - Drivers o BIOS de hace varios años ............ → actualizar desde la web
+                                                      oficial del fabricante
+  - CPU a más de 85 °C con carga .................. → limpieza y pasta térmica
+
+================================================================================
+ Firma del técnico: ____________________   Conformidad del cliente: __________
+================================================================================
