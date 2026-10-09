@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stockstore Analytics</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">STOCK<span>STORE</span> <small>analytics</small></div>
+    <div class="top-actions">
+      <button id="syncBtn" class="btn">Sincronizar</button>
+      <button id="connectBtn" class="btn btn-accent">Cuentas</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="flash" class="flash" hidden></div>
+    <div id="demoBanner" class="banner" hidden>
+      <strong>Datos de ejemplo.</strong> Todavía no conectaste ninguna cuenta: lo que ves es inventado para mostrarte el panel.
+      Tocá <em>Cuentas</em> para conectar Facebook, Instagram y TikTok.
+    </div>
+
+    <div class="filters" role="toolbar" aria-label="Filtros">
+      <div class="seg" id="periodSeg" role="radiogroup" aria-label="Período">
+        <button data-days="7" role="radio">7 días</button>
+        <button data-days="30" role="radio">30 días</button>
+        <button data-days="90" role="radio">90 días</button>
+      </div>
+      <div class="seg" id="networkSeg" role="group" aria-label="Redes"></div>
+    </div>
+
+    <section class="kpis" id="kpis"></section>
+
+    <h2 class="section-title">Seguidores</h2>
+    <section class="multiples" id="followerCharts"></section>
+
+    <div class="grid-2">
+      <section class="card">
+        <h3>Mejor momento para publicar</h3>
+        <p class="sub">Engagement promedio de lo que publicaste en cada día y franja horaria (hora local).</p>
+        <div id="heatmap"></div>
+      </section>
+      <section class="card">
+        <h3>Rendimiento por formato</h3>
+        <p class="sub">Engagement promedio por publicación. Entre paréntesis, cuántas hubo.</p>
+        <div id="formats"></div>
+      </section>
+    </div>
+
+    <section class="card">
+      <div class="card-head">
+        <h3>Publicaciones</h3>
+        <span class="sub" id="postsCount"></span>
+      </div>
+      <div class="table-wrap">
+        <table id="postsTable">
+          <thead>
+            <tr>
+              <th data-sort="createdAt">Fecha</th>
+              <th>Red</th>
+              <th class="text-col">Publicación</th>
+              <th data-sort="views" class="num">Vistas</th>
+              <th data-sort="likes" class="num">Me gusta</th>
+              <th data-sort="comments" class="num">Coment.</th>
+              <th data-sort="shares" class="num">Compart.</th>
+              <th data-sort="saves" class="num">Guard.</th>
+              <th data-sort="er" class="num">Engagement</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="accountsDialog">
+    <div class="dialog-head">
+      <h3>Cuentas conectadas</h3>
+      <button class="icon-btn" id="closeDialog" aria-label="Cerrar">✕</button>
+    </div>
+    <ul id="accountList" class="account-list"></ul>
+    <div class="connect-row">
+      <a class="btn" id="connectMeta" href="/auth/meta">Conectar Facebook + Instagram</a>
+      <a class="btn" id="connectTiktok" href="/auth/tiktok">Conectar TikTok</a>
+    </div>
+    <p class="sub" id="configHint"></p>
+  </dialog>
+
+  <div id="tooltip" class="tooltip" role="status" hidden></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
