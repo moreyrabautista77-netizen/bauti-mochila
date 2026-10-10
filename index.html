@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tienda</title>
+  <meta name="description" content="Tienda online">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar__inner">
+      <a href="#" class="brand" id="brand"></a>
+      <button class="cart-btn" id="cartOpen" aria-label="Abrir carrito">
+        Carrito <span class="badge" id="cartCount">0</span>
+      </button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap">
+      <h1 id="heroTitle"></h1>
+      <p id="heroTagline"></p>
+      <p class="hero__perk" id="heroPerk"></p>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <nav class="filters" id="filters" aria-label="Categorías"></nav>
+    <section class="grid" id="grid" aria-live="polite"></section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap" id="footer"></div>
+  </footer>
+
+  <a class="wa-float" id="waFloat" target="_blank" rel="noopener" aria-label="Consultar por WhatsApp">WhatsApp</a>
+
+  <div class="overlay" id="overlay" hidden></div>
+  <aside class="drawer" id="drawer" aria-label="Carrito" aria-hidden="true">
+    <div class="drawer__head">
+      <h2>Tu carrito</h2>
+      <button class="icon-btn" id="cartClose" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="drawer__body" id="cartItems"></div>
+    <form class="drawer__foot" id="checkout">
+      <div class="totals" id="totals"></div>
+      <label>Nombre<input name="name" required autocomplete="name"></label>
+      <label>Ciudad / dirección<input name="address" required autocomplete="street-address"></label>
+      <fieldset class="pay" id="payOptions"><legend>Forma de pago</legend></fieldset>
+      <button type="submit" class="btn btn--primary" id="checkoutBtn">Finalizar compra</button>
+      <p class="error" id="checkoutError" hidden></p>
+    </form>
+  </aside>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

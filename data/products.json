@@ -1,0 +1,42 @@
+[
+  {
+    "id": "mochila-urbana",
+    "name": "Mochila Urbana 20L",
+    "category": "Mochilas",
+    "price": 45000,
+    "compareAt": 59000,
+    "description": "Impermeable, bolsillo para notebook de 15\" y puerto USB.",
+    "image": "",
+    "stock": 12
+  },
+  {
+    "id": "rinonera-sport",
+    "name": "Riñonera Sport",
+    "category": "Accesorios",
+    "price": 18000,
+    "compareAt": 0,
+    "description": "Liviana, dos compartimentos y correa ajustable.",
+    "image": "",
+    "stock": 25
+  },
+  {
+    "id": "botella-termica",
+    "name": "Botella Térmica 750ml",
+    "category": "Accesorios",
+    "price": 22000,
+    "compareAt": 27000,
+    "description": "Acero inoxidable, 12 h frío / 8 h calor.",
+    "image": "",
+    "stock": 8
+  },
+  {
+    "id": "mochila-trekking",
+    "name": "Mochila Trekking 40L",
+    "category": "Mochilas",
+    "price": 89000,
+    "compareAt": 0,
+    "description": "Espaldar ventilado, cubre-lluvia incluido.",
+    "image": "",
+    "stock": 0
+  }
+]

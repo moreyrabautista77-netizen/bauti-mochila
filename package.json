@@ -1,0 +1,9 @@
+{
+  "name": "bauti-store",
+  "private": true,
+  "scripts": {
+    "dev": "npx --yes serve .",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=18" }
+}
