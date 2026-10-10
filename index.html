@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tienda</title>
+  <meta name="description" content="Remeras oversize. Colecciones ICONS y VINTAGE.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="#" class="brand" id="brand"></a>
+    <button class="cart-btn" id="cartOpen" aria-label="Abrir carrito">
+      Carrito <span class="badge" id="cartCount">0</span>
+    </button>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">Remeras oversize · 100% algodón</p>
+    <h1>ICONS <span>&</span> VINTAGE</h1>
+    <p class="sub" id="shippingNote"></p>
+  </section>
+
+  <nav class="filters" id="filters">
+    <button class="chip active" data-filter="ALL">Todo</button>
+    <button class="chip" data-filter="ICONS">Icons</button>
+    <button class="chip" data-filter="VINTAGE">Vintage</button>
+  </nav>
+
+  <main class="grid" id="grid"></main>
+
+  <footer class="footer">
+    <p>Comprás por WhatsApp: armás el pedido acá y lo confirmamos por chat.</p>
+    <a id="igLink" target="_blank" rel="noopener"></a>
+  </footer>
+
+  <!-- Modal de producto -->
+  <dialog class="modal" id="productModal">
+    <button class="close" data-close aria-label="Cerrar">×</button>
+    <div class="modal-body">
+      <div class="modal-img" id="mImg"></div>
+      <div class="modal-info">
+        <p class="eyebrow" id="mCollection"></p>
+        <h2 id="mName"></h2>
+        <p class="price" id="mPrice"></p>
+        <p class="label">Talle</p>
+        <div class="sizes" id="mSizes"></div>
+        <p class="label">Cantidad</p>
+        <div class="qty">
+          <button id="mMinus" aria-label="Menos">−</button>
+          <span id="mQty">1</span>
+          <button id="mPlus" aria-label="Más">+</button>
+        </div>
+        <button class="primary" id="mAdd">Agregar al carrito</button>
+        <p class="hint" id="mHint"></p>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Carrito -->
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer-head">
+      <h2>Tu pedido</h2>
+      <button class="close" id="cartClose" aria-label="Cerrar">×</button>
+    </div>
+    <ul class="cart-list" id="cartList"></ul>
+    <div class="drawer-foot">
+      <label class="field">Nombre<input id="cName" autocomplete="name" placeholder="Tu nombre"></label>
+      <label class="field">Entrega
+        <select id="cDelivery">
+          <option>Envío a domicilio</option>
+          <option>Retiro</option>
+        </select>
+      </label>
+      <label class="field" id="cAddressWrap">Ciudad / dirección<input id="cAddress" autocomplete="street-address" placeholder="Ej: CABA, Palermo"></label>
+      <div class="total"><span>Total</span><strong id="cartTotal">$0</strong></div>
+      <button class="primary wa" id="checkout">Pedir por WhatsApp</button>
+      <p class="hint">El envío se cotiza por chat.</p>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
