@@ -86,82 +86,191 @@ const UI = {
 
 const ICONS = {
   move: '<path d="M5 3l6 16 2.5-6.5L20 10z"/>',
-  hand: '<path d="M8 13V5.5a1.5 1.5 0 013 0V11m0-6.5a1.5 1.5 0 013 0V11m0-4.5a1.5 1.5 0 013 0V14a7 7 0 01-7 7h-1a6 6 0 01-5-3l-2.6-4.4a1.5 1.5 0 012.5-1.6L8 13"/>',
-  erase: '<path d="M7 21h12M4.5 15.5l9-9a2 2 0 012.8 0l3.2 3.2a2 2 0 010 2.8L13 19H8.5z"/><path d="M9.5 10.5l5 5"/>',
-  restore: '<path d="M18 3l3 3-9.5 9.5-4 1 1-4z"/><path d="M4 21c1.5-2 3-2.5 4.5-2.5"/>',
-  wand: '<path d="M4 20L15 9M14 4v2M18 6l-1.4 1.4M20 10h-2M12.6 7.4L11 6"/><path d="M15 9l1.5 1.5"/>',
-  text: '<path d="M5 6V4h14v2M12 4v16M9 20h6"/>',
+  marquee: '<rect x="4" y="5" width="16" height="14" stroke-dasharray="3 2"/>',
+  ellipseSel: '<ellipse cx="12" cy="12" rx="8" ry="6.5" stroke-dasharray="3 2"/>',
+  lasso: '<path d="M6 15c-3-3 0-9 7-9s8 5 5 8-8 2-9 1"/><path d="M8 15c-1 2 0 5 2 5"/>',
+  polyLasso: '<path d="M4 9l7-5 9 6-4 8H7z"/><path d="M7 18l-1 3"/>',
+  magLasso: '<path d="M6 15c-3-3 0-9 7-9s8 5 5 8-8 2-9 1"/><path d="M8 15v6M5 18h6"/>',
+  quickSel: '<path d="M14 4l6 6-8 8H6v-6z" stroke-dasharray="3 2"/><path d="M4 20l4-4"/>',
+  wandSel: '<path d="M4 20L15 9M14 4v2M18 6l-1.4 1.4M20 10h-2M12.6 7.4L11 6"/><path d="M15 9l1.5 1.5"/>',
+  crop: '<path d="M6 2v16h16M2 6h16v16"/>',
   picker: '<path d="M14.5 4.5l5 5M7 14l7.5-7.5 3 3L10 17H7z"/><path d="M7 17l-3 3"/>',
-  image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>',
+  spotHeal: '<rect x="4" y="9" width="16" height="6" rx="3" transform="rotate(-45 12 12)"/><path d="M11 11h2M12 10v2"/><circle cx="18" cy="18" r="2" stroke-dasharray="1 1"/>',
+  heal: '<rect x="4" y="9" width="16" height="6" rx="3" transform="rotate(-45 12 12)"/><path d="M10.5 12h3M12 10.5v3"/>',
+  patch: '<path d="M4 6h10v8H4z" stroke-dasharray="2 2"/><path d="M10 12h10v8H10z"/>',
+  redEye: '<path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3" fill="currentColor"/>',
+  brush: '<path d="M18 3l3 3-9.5 9.5-4 1 1-4z"/><path d="M4 21c1.5-2 3-2.5 4.5-2.5"/>',
+  pencil: '<path d="M4 20l2-6L16 4l4 4L10 18z"/><path d="M14 6l4 4"/>',
+  colorReplace: '<path d="M18 3l3 3-9.5 9.5-4 1 1-4z"/><circle cx="6" cy="18" r="3"/>',
+  clone: '<path d="M8 3h8v5H8zM12 8v5M5 13h14v4H5zM5 21h14"/>',
+  pattern: '<path d="M8 3h8v5H8zM12 8v5M5 13h14v4H5z"/><path d="M5 21h2M9 21h2M13 21h2M17 21h2"/>',
+  erase: '<path d="M7 21h12M4.5 15.5l9-9a2 2 0 012.8 0l3.2 3.2a2 2 0 010 2.8L13 19H8.5z"/><path d="M9.5 10.5l5 5"/>',
+  restore: '<path d="M3 12a9 9 0 109-9 9 9 0 00-7 3.5"/><path d="M3 3v5h5"/>',
+  bgErase: '<path d="M7 21h12M4.5 15.5l9-9a2 2 0 012.8 0l3.2 3.2a2 2 0 010 2.8L13 19H8.5z"/><path d="M12 3v3M3 12h3"/>',
+  magicErase: '<path d="M7 21h12M4.5 15.5l9-9a2 2 0 012.8 0l3.2 3.2a2 2 0 010 2.8L13 19H8.5z"/><path d="M19 2l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"/>',
+  gradient: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5v14M11 5v14" opacity=".5"/>',
+  bucket: '<path d="M5 11l7-7 7 7-7 7z"/><path d="M19 15s2 2.5 2 3.5a2 2 0 01-4 0c0-1 2-3.5 2-3.5"/>',
+  blur: '<path d="M12 3s6 7 6 11a6 6 0 01-12 0c0-4 6-11 6-11z"/>',
+  sharpen: '<path d="M12 3l5 16H7z"/>',
+  smudge: '<path d="M9 21v-8l-3-3a2 2 0 013-3l2 2V4a2 2 0 014 0v8"/>',
+  dodge: '<circle cx="9" cy="9" r="5"/><path d="M12.5 12.5L20 20"/>',
+  burn: '<path d="M4 20c2-1 4-1 6 0V9a3 3 0 016 0v11c2-1 4-1 4-1"/>',
+  sponge: '<rect x="4" y="6" width="16" height="12" rx="4"/><circle cx="9" cy="11" r="1"/><circle cx="14" cy="13" r="1"/>',
+  pen: '<path d="M12 3l6 9-6 9-6-9z"/><circle cx="12" cy="12" r="1.5"/>',
+  freePen: '<path d="M12 3l6 9-6 9-6-9z"/><path d="M3 21c3-4 6 2 9-2"/>',
+  text: '<path d="M5 6V4h14v2M12 4v16M9 20h6"/>',
+  vtext: '<path d="M6 5h2v14H6M8 12h10M18 9v6"/>',
+  direct: '<path d="M6 3l11 11-5 1-2 5z" fill="currentColor"/>',
   shape: '<rect x="3" y="3" width="9" height="9" rx="1"/><circle cx="16.5" cy="16.5" r="4.5"/>',
+  hand: '<path d="M8 13V5.5a1.5 1.5 0 013 0V11m0-6.5a1.5 1.5 0 013 0V11m0-4.5a1.5 1.5 0 013 0V14a7 7 0 01-7 7h-1a6 6 0 01-5-3l-2.6-4.4a1.5 1.5 0 012.5-1.6L8 13"/>',
+  rotView: '<path d="M20 12a8 8 0 11-3-6.2"/><path d="M20 4v5h-5"/>',
+  zoom: '<circle cx="10" cy="10" r="6"/><path d="M14.5 14.5L20 20M7.5 10h5M10 7.5v5"/>',
+  image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>',
   tpl: '<path d="M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z"/>',
   fit: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
   guide: '<path d="M8 3L3 7l3 3v11h12V10l3-3-5-4c-1 2-2.5 3-4 3S9 5 8 3z"/>'
 };
-const svg = n => `<svg viewBox="0 0 24 24">${ICONS[n]}</svg>`;
+const svg = n => `<svg viewBox="0 0 24 24">${ICONS[n] || ''}</svg>`;
+const TOOL_GROUPS = [['move'], ['marquee', 'ellipseSel'], ['lasso', 'polyLasso', 'magLasso'], ['quickSel', 'wandSel'], ['crop'], ['picker'],
+  ['spotHeal', 'heal', 'patch', 'redEye'], ['brush', 'pencil', 'colorReplace'], ['clone', 'pattern'], ['erase', 'restore', 'bgErase', 'magicErase'],
+  ['gradient', 'bucket'], ['blur', 'sharpen', 'smudge'], ['dodge', 'burn', 'sponge'], ['pen', 'freePen'], ['text', 'vtext'], ['direct'], ['shape'],
+  ['hand', 'rotView'], ['zoom']];
+const groupOf = t => TOOL_GROUPS.find(g => g.includes(t));
 
 const Panels = {
+  tab: 'layers',
+  groupCur: {},
   init() {
     this.buildToolbar();
     this.buildLayerFoot();
+    $$('#layerTabs button').forEach(b => (b.onclick = () => { this.tab = b.dataset.tab; $$('#layerTabs button').forEach(x => x.classList.toggle('active', x === b)); this.refreshLayers(); }));
+    document.addEventListener('pointerdown', e => { const f = $('#flyout'); if (f && !f.contains(e.target)) f.remove(); });
   },
   refreshAll() {
     this.refreshLayers();
     this.refreshProps();
     this.refreshOptbar();
+    this.refreshColors();
     $('#projName').value = App.project.name;
     if (App.view === 'mockup') Mockup.buildPanel();
     if (App.view === 'video') Anim.buildPanel();
   },
 
-  /* ---------- barra de herramientas ---------- */
+  /* ---------- barra de herramientas (agrupada como Photopea) ---------- */
   buildToolbar() {
     const tb = $('#toolbar');
     tb.innerHTML = '';
-    const tools = [['move', 'Mover / escalar / rotar', 'V'], ['hand', 'Mano (o mantené Espacio)', 'H'], ['erase', 'Borrador de fondo (pincel)', 'E'],
-      ['restore', 'Restaurar (deshacer borrado)', 'R'], ['wand', 'Varita: borrar por color', 'W'], ['text', 'Texto', 'T'], ['picker', 'Cuentagotas', 'I']];
-    for (const [id, title, k] of tools) {
-      tb.append(el('button', { class: 'tool' + (App.tool === id ? ' active' : ''), 'data-tool': id, title: `${title} (${k})`, html: svg(id) + `<span class="k">${k}</span>`, onclick: () => App.setTool(id) }));
+    const grid = el('div', { class: 'tgrid' });
+    for (const g of TOOL_GROUPS) {
+      const cur = g.includes(App.tool) ? App.tool : (this.groupCur[g[0]] || g[0]);
+      const [name, key] = TOOL_INFO[cur];
+      const b = el('button', { class: 'tool' + (g.includes(App.tool) ? ' active' : ''), 'data-group': g[0], title: `${name}${key ? ' (' + key + ')' : ''}${g.length > 1 ? ' — clic derecho: más herramientas' : ''}`, html: svg(cur) + (g.length > 1 ? '<span class="tri"></span>' : '') });
+      b.onclick = () => { if (g.includes(App.tool) && g.length > 1) this.flyout(b, g); else App.setTool(cur); };
+      b.oncontextmenu = e => { e.preventDefault(); if (g.length > 1) this.flyout(b, g); };
+      let hold = 0;
+      b.onpointerdown = () => { hold = setTimeout(() => g.length > 1 && this.flyout(b, g), 380); };
+      b.onpointerup = b.onpointerleave = () => clearTimeout(hold);
+      grid.append(b);
     }
+    tb.append(grid, el('div', { class: 'tb-sep' }));
+    // colores principal / secundario
+    const fg = el('input', { type: 'color', id: 'fgColor', title: 'Color principal', value: App.colors.fg });
+    const bg = el('input', { type: 'color', id: 'bgColor', title: 'Color secundario', value: App.colors.bg });
+    fg.oninput = () => { App.colors.fg = fg.value; };
+    bg.oninput = () => { App.colors.bg = bg.value; };
+    tb.append(el('div', { class: 'colors' }, fg, bg,
+      el('button', { class: 'cbtn swap', title: 'Intercambiar (X)', onclick: () => this.swapColors() }, '⇄'),
+      el('button', { class: 'cbtn reset', title: 'Colores por defecto (D)', onclick: () => this.resetColors() }, '◩')));
     tb.append(el('div', { class: 'tb-sep' }));
-    tb.append(el('button', { class: 'tool', title: 'Agregar imagen', html: svg('image'), onclick: () => $('#fileImg').click() }));
-    tb.append(el('button', { class: 'tool', title: 'Plantillas de texto y formas', html: svg('tpl'), onclick: () => this.showTemplates() }));
-    tb.append(el('button', { class: 'tool', title: 'Agregar forma', html: svg('shape'), onclick: () => this.addShape('rect') }));
-    tb.append(el('div', { class: 'tb-sep' }));
-    tb.append(el('button', { class: 'tool' + (Editor.showGuide ? ' active' : ''), title: 'Mostrar remera de guía', html: svg('guide'), onclick: e => { Editor.showGuide = !Editor.showGuide; e.currentTarget.classList.toggle('active', Editor.showGuide); Editor.requestRender(); } }));
-    tb.append(el('button', { class: 'tool', title: 'Ajustar a pantalla (Ctrl+0)', html: svg('fit'), onclick: () => Editor.fit() }));
+    const extra = el('div', { class: 'tgrid' },
+      el('button', { class: 'tool', title: 'Agregar imagen', html: svg('image'), onclick: () => $('#fileImg').click() }),
+      el('button', { class: 'tool', title: 'Plantillas de texto y formas', html: svg('tpl'), onclick: () => this.showTemplates() }),
+      el('button', { class: 'tool' + (Editor.showGuide ? ' active' : ''), title: 'Mostrar remera / foto de guía', html: svg('guide'), onclick: e => { Editor.showGuide = !Editor.showGuide; e.currentTarget.classList.toggle('active', Editor.showGuide); Editor.requestRender(); } }),
+      el('button', { class: 'tool', title: 'Ajustar a pantalla (Ctrl+0)', html: svg('fit'), onclick: () => Editor.fit() }));
+    tb.append(extra);
+  },
+  flyout(btn, g) {
+    $('#flyout')?.remove();
+    const r = btn.getBoundingClientRect();
+    const f = el('div', { id: 'flyout', class: 'flyout', style: `left:${r.right + 6}px;top:${r.top}px` });
+    for (const t of g) {
+      const [name, key] = TOOL_INFO[t];
+      f.append(el('button', { class: App.tool === t ? 'active' : '', html: svg(t) + `<span>${name}</span><span class="k">${key}</span>`, onclick: () => { f.remove(); App.setTool(t); } }));
+    }
+    document.body.append(f);
+  },
+  refreshColors() {
+    const f = $('#fgColor'), b = $('#bgColor');
+    if (f) f.value = App.colors.fg;
+    if (b) b.value = App.colors.bg;
+  },
+  swapColors() { const c = App.colors; [c.fg, c.bg] = [c.bg, c.fg]; this.refreshColors(); },
+  resetColors() {
+    const dark = lumHex(App.project.shirt.color) < 0.45;
+    App.colors.fg = dark ? '#f1e7d3' : '#141414';
+    App.colors.bg = dark ? '#141414' : '#f3f2ee';
+    this.refreshColors();
   },
 
-  /* ---------- barra de opciones ---------- */
+  /* ---------- barra de opciones (cambia según la herramienta) ---------- */
   refreshOptbar() {
     const ob = $('#optbar');
+    if (!ob) return;
     ob.innerHTML = '';
+    const t = App.tool, T = App.t;
+    const grp = (...k) => el('div', { class: 'grp' }, ...k);
+    const lab = s => el('label', {}, s);
+    const sel = (obj, key, opts, cb) => {
+      const s = el('select', {}, opts.map(([v, n]) => el('option', { value: v, selected: String(obj[key]) === String(v) }, n)));
+      s.onchange = () => { obj[key] = typeof obj[key] === 'number' ? +s.value : s.value; cb && cb(); };
+      return s;
+    };
+    const chk = (obj, key, text) => { const c = el('input', { type: 'checkbox', checked: !!obj[key] }); c.onchange = () => (obj[key] = c.checked); return el('label', { class: 'chk' }, c, text); };
+    ob.append(el('b', { class: 'tname' }, TOOL_INFO[t] ? TOOL_INFO[t][0].split(' (')[0] : ''));
+    if (usesBrush(t)) ob.append(grp(lab('Tamaño'), this.miniRange(App.brush, 'size', 2, 600, 1), lab('Dureza'), this.miniRange(App.brush, 'hard', 0, 1, 0.05)));
+    if (['brush', 'pencil', 'colorReplace', 'clone', 'pattern', 'heal', 'spotHeal', 'bucket', 'gradient'].includes(t)) ob.append(grp(lab('Opacidad'), this.miniRange(T, 'opacity', 0.02, 1, 0.01)));
+    if (['blur', 'sharpen', 'smudge', 'dodge', 'burn', 'sponge'].includes(t)) ob.append(grp(lab('Intensidad'), this.miniRange(T, 'strength', 0.02, 1, 0.01)));
+    if (t === 'sponge') ob.append(sel(T, 'spongeMode', [['desat', 'Desaturar'], ['sat', 'Saturar']]));
+    if (t === 'pattern') ob.append(grp(lab('Motivo'), sel(T, 'pattern', Patterns.list)));
+    if (t === 'clone' || t === 'heal') ob.append(el('span', { class: 'hint' }, 'Alt+clic para tomar la muestra'));
+    if (t === 'redEye') ob.append(el('span', { class: 'hint' }, 'Clic sobre el ojo'));
+    if (t === 'spotHeal') ob.append(el('span', { class: 'hint' }, 'Pintá sobre la mancha y soltá'));
+    if (t === 'patch') ob.append(el('span', { class: 'hint' }, '1) Seleccioná la zona con el lazo  2) Arrastrala hacia una zona sana'));
+    if (SEL_TOOLS.includes(t)) {
+      if (['wandSel', 'quickSel'].includes(t)) ob.append(grp(lab('Tolerancia'), this.miniRange(T, 'tol', 2, 120, 1)));
+      if (t === 'wandSel') ob.append(chk(T, 'contiguous', 'Contiguo'));
+      if (['marquee', 'ellipseSel', 'lasso', 'polyLasso', 'magLasso'].includes(t)) ob.append(grp(lab('Desvanecer'), this.miniRange(T, 'feather', 0, 120, 1)));
+      ob.append(el('span', { class: 'hint' }, 'Shift: sumar · Alt: restar'));
+      ob.append(el('button', { onclick: () => Menus.run('selSubject') }, 'Seleccionar sujeto'), el('button', { onclick: () => Menus.run('selInvert') }, 'Invertir'), el('button', { onclick: () => Sel.none() }, 'Deseleccionar'));
+    }
+    if (['magicErase', 'bgErase', 'bucket'].includes(t)) ob.append(grp(lab('Tolerancia'), this.miniRange(T, 'tol', 2, 120, 1)));
+    if (['magicErase', 'bucket'].includes(t)) ob.append(chk(T, 'contiguous', 'Contiguo'));
+    if (['erase', 'restore', 'bgErase', 'magicErase'].includes(t)) ob.append(el('button', { onclick: () => Menus.run('autoBg') }, 'Quitar fondo automático'));
+    if (t === 'gradient') ob.append(sel(T, 'gradType', [['linear', 'Lineal'], ['radial', 'Radial']]), chk(T, 'gradReverse', 'Invertir'), chk(T, 'gradTransparent', 'A transparente'));
+    if (t === 'shape') {
+      ob.append(grp(lab('Forma'), sel(T, 'shape', SHAPES, () => this.refreshOptbar())));
+      if (T.shape === 'polygon') ob.append(grp(lab('Lados'), this.miniRange(T, 'sides', 3, 12, 1)));
+      ob.append(el('span', { class: 'hint' }, 'Arrastrá para dibujar (Shift: proporcional). Usa el color principal.'));
+    }
+    if (t === 'crop') ob.append(el('span', { class: 'hint' }, 'Arrastrá sobre la imagen seleccionada'), el('button', { onclick: () => Menus.run('cropToSel') }, 'Recortar a selección'));
+    if (t === 'pen') ob.append(el('span', { class: 'hint' }, 'Clic = punto · arrastrar = curva · clic en el 1º punto = cerrar'), el('button', { onclick: () => Editor.finishPen(false) }, 'Terminar (Enter)'));
+    if (t === 'move') ob.append(el('span', { class: 'hint' }, 'Esquinas: escalar (Shift = libre) · lados: estirar · círculo: rotar'));
+    if (['move', 'hand', 'zoom', 'rotView', 'text', 'vtext', 'direct', 'picker', 'freePen'].includes(t)) {
+      ob.append(grp(el('button', { class: 'ghost', onclick: () => Editor.zoomBy(1 / 1.25) }, '−'), el('span', { id: 'zoomLbl' }, ''), el('button', { class: 'ghost', onclick: () => Editor.zoomBy(1.25) }, '+')));
+      if (Editor.vr) ob.append(el('button', { onclick: () => { Editor.vr = 0; Editor.requestRender(); this.refreshOptbar(); } }, 'Enderezar vista'));
+    }
+    if (t === 'picker') ob.append(el('span', { class: 'hint' }, 'Clic: color principal · Alt: secundario · Shift sobre foto: color de acento'));
+    ob.append(el('span', { style: 'flex:1' }));
     ob.append(UI.seg([['front', 'Frente'], ['back', 'Espalda']], () => App.side, v => { App.side = v; App.sel = null; this.refreshAll(); Editor.requestRender(); }));
-    ob.append(el('button', { title: 'Copiar todas las capas de este lado al otro', onclick: () => this.copySide() }, App.side === 'front' ? 'Copiar a espalda →' : '← Copiar a frente'));
-    ob.append(el('span', { class: 'sep' }));
     const sw = el('div', { class: 'swatches', title: 'Color de la remera' });
-    const cols = ['#141414', '#f3f2ee', '#8e8e90', '#e8dfca', '#4b3a2c', '#4a5232', '#1b2236', '#7a1f24'];
-    for (const c of cols) sw.append(el('button', { class: 'sw' + (App.project.shirt.color === c ? ' active' : ''), style: `background:${c}`, title: c, onclick: () => this.setShirtColor(c) }));
-    const ci = el('input', { type: 'color', value: App.project.shirt.color, title: 'Otro color' });
+    for (const c of ['#141414', '#f3f2ee', '#8e8e90', '#e8dfca']) sw.append(el('button', { class: 'sw' + (App.project.shirt.color === c ? ' active' : ''), style: `background:${c}`, title: c, onclick: () => this.setShirtColor(c) }));
+    const ci = el('input', { type: 'color', value: App.project.shirt.color, title: 'Otro color de remera' });
     ci.addEventListener('input', () => { App.project.shirt.color = ci.value; App.changed(true); });
     ci.addEventListener('change', () => this.setShirtColor(ci.value));
     sw.append(ci);
-    ob.append(el('label', {}, 'Remera'), sw);
-    ob.append(el('span', { class: 'sep' }));
-    const t = App.tool;
-    if (t === 'erase' || t === 'restore') {
-      ob.append(el('div', { class: 'grp' }, el('label', {}, 'Tamaño'), this.miniRange(App.brush, 'size', 4, 500, 1), el('label', {}, 'Dureza'), this.miniRange(App.brush, 'hard', 0, 1, 0.05)));
-      ob.append(el('span', { class: 'hint' }, '[ y ] cambian el tamaño'));
-    } else if (t === 'wand') {
-      ob.append(el('div', { class: 'grp' }, el('label', {}, 'Tolerancia'), this.miniRange(App.wand, 'tol', 2, 120, 1)));
-      const g = el('input', { type: 'checkbox', checked: App.wand.global });
-      g.onchange = () => (App.wand.global = g.checked);
-      ob.append(el('label', { class: 'chk' }, g, 'Todo el color (no contiguo)'));
-      ob.append(el('button', { onclick: () => { const L = App.selected(); if (L && L.type === 'image') { autoRemoveBg(L, App.wand.tol); toast('Fondo quitado. Retocá con el borrador (E) o restaurar (R).'); } else toast('Seleccioná una imagen'); } }, 'Quitar fondo automático'));
-    } else {
-      ob.append(el('div', { class: 'grp' }, el('button', { class: 'ghost', onclick: () => Editor.zoomBy(1 / 1.25) }, '−'), el('span', { id: 'zoomLbl' }, ''), el('button', { class: 'ghost', onclick: () => Editor.zoomBy(1.25) }, '+')));
-    }
+    ob.append(sw);
     $('#sideLbl').textContent = App.side === 'front' ? 'FRENTE' : 'ESPALDA';
+    Editor.requestRender();
   },
   miniRange(obj, key, min, max, step) {
     const r = el('input', { type: 'range', min, max, step, value: obj[key] });
@@ -178,17 +287,30 @@ const Panels = {
   buildLayerFoot() {
     const f = $('#layersFoot');
     f.append(
-      el('button', { onclick: () => $('#fileImg').click(), title: 'Agregar imagen' }, '+ Imagen'),
-      el('button', { onclick: () => this.addText(), title: 'Agregar texto' }, '+ Texto'),
-      el('button', { onclick: () => this.addShape('rect'), title: 'Agregar forma' }, '+ Forma'),
+      el('button', { onclick: () => $('#fileImg').click(), title: 'Agregar imagen' }, '+ Img'),
+      el('button', { onclick: () => this.addEmptyLayer(), title: 'Nueva capa vacía para pintar (Ctrl+Shift+N)' }, '+ Capa'),
+      el('button', { onclick: e => Menus.open(e.currentTarget, 'adjustNew'), title: 'Nueva capa de ajuste' }, '+ Ajuste'),
       el('span', { class: 'spacer', style: 'flex:1' }),
       el('button', { onclick: () => this.reorder(1), title: 'Subir capa (Ctrl+])' }, '↑'),
       el('button', { onclick: () => this.reorder(-1), title: 'Bajar capa (Ctrl+[)' }, '↓'),
-      el('button', { onclick: () => this.duplicate(), title: 'Duplicar (Ctrl+D)' }, '⧉'),
-      el('button', { onclick: () => this.remove(), title: 'Eliminar (Supr)' }, '🗑')
+      el('button', { onclick: () => this.duplicate(), title: 'Duplicar (Ctrl+J)' }, '⧉'),
+      el('button', { onclick: () => this.remove(), title: 'Eliminar capa' }, '🗑')
     );
   },
+  refreshHistory() {
+    if (this.tab !== 'history') return;
+    const list = $('#layersList');
+    list.innerHTML = '';
+    History.stack.forEach((h, i) => {
+      const row = el('div', { class: 'hrow' + (i === History.idx ? ' sel' : '') + (i > History.idx ? ' future' : '') }, el('span', {}, h.label || 'Edición'), el('span', { class: 'hint' }, new Date(h.t || Date.now()).toLocaleTimeString().slice(0, 5)));
+      row.onclick = () => History.go(i);
+      list.append(row);
+    });
+    const cur = list.querySelector('.sel');
+    if (cur) cur.scrollIntoView({ block: 'nearest' });
+  },
   refreshLayers() {
+    if (this.tab === 'history') { this.refreshHistory(); $('#sideLbl').textContent = App.side === 'front' ? 'FRENTE' : 'ESPALDA'; Editor.requestRender(); return; }
     const list = $('#layersList');
     list.innerHTML = '';
     const ls = App.layers();
@@ -200,7 +322,7 @@ const Panels = {
       const row = el('div', { class: 'lrow' + (L.id === App.sel ? ' sel' : '') + (L.visible ? '' : ' hidden'), draggable: true },
         el('button', { class: 'ib', title: 'Mostrar/ocultar', onclick: e => { e.stopPropagation(); L.visible = !L.visible; App.commit(); } }, L.visible ? '👁' : '◌'),
         th,
-        el('span', { class: 'lname', title: 'Doble clic para renombrar' }, L.name),
+        el('span', { class: 'lname', title: 'Doble clic para renombrar' }, L.clip ? '↳ ' : '', L.name, L.maskId ? el('span', { class: 'mtag', title: 'Tiene máscara' }, '▣') : null),
         el('button', { class: 'ib', title: 'Bloquear', onclick: e => { e.stopPropagation(); L.locked = !L.locked; App.commit(); } }, L.locked ? '🔒' : '🔓'));
       row.addEventListener('click', () => App.select(L.id));
       row.querySelector('.lname').addEventListener('dblclick', e => {
@@ -228,6 +350,7 @@ const Panels = {
   },
   thumb(cv, L) {
     const x = ctx2d(cv);
+    if (L.type === 'adjust') { x.fillStyle = '#26262e'; x.fillRect(0, 0, 68, 68); x.fillStyle = '#ddd'; x.beginPath(); x.arc(34, 34, 18, Math.PI / 2, Math.PI * 1.5); x.fill(); x.strokeStyle = '#ddd'; x.lineWidth = 3; x.beginPath(); x.arc(34, 34, 18, 0, 7); x.stroke(); return; }
     x.fillStyle = App.project.shirt.color;
     x.fillRect(0, 0, 68, 68);
     const R = Proc.cache.get(L.id + '@' + Editor.rs()) || [...Proc.cache.entries()].find(([k]) => k.startsWith(L.id + '@'))?.[1];
@@ -236,11 +359,12 @@ const Panels = {
     const s = Math.min(60 / c.width, 60 / c.height);
     x.drawImage(c, (68 - c.width * s) / 2, (68 - c.height * s) / 2, c.width * s, c.height * s);
   },
-  addLayer(L, side) {
+  addLayer(L, side, label) {
     L.id = uid();
-    App.layers(side).push(L);
+    const arr = App.layers(side), cur = App.selected();
+    if (cur && !side && arr.includes(cur)) arr.splice(arr.indexOf(cur) + 1, 0, L); else arr.push(L);
     App.sel = L.id;
-    App.commit();
+    App.commit(label || 'Nueva capa');
     this.refreshProps();
   },
   async addImageFiles(files) {
@@ -276,12 +400,77 @@ const Panels = {
     L.name = o.name || ('Texto: ' + String(L.text).slice(0, 18));
     this.addLayer(L);
   },
+  /* capa vacía para pintar (media resolución del diseño) */
+  addEmptyLayer(silent) {
+    const c = mkCanvas(DESIGN_W / 2, DESIGN_H / 2);
+    ctx2d(c, true);
+    const id = Assets.add({ kind: 'img', img: c, w: c.width, h: c.height, url: null, revs: [], cur: 0, _rw: true });
+    const L = Defaults.image();
+    L.assetId = id; L.w = c.width; L.h = c.height; L.scale = 2;
+    L.name = 'Capa ' + (App.layers().filter(l => l.type === 'image').length + 1);
+    this.addLayer(L, undefined, 'Nueva capa');
+    if (!silent) toast('Capa vacía creada: pintá con el Pincel (B), Degradado (G) o Bote (G)');
+    return L;
+  },
+  addPath(pts, closed, smooth) {
+    const b = pathBox(pts), cx = (b.x0 + b.x1) / 2, cy = (b.y0 + b.y1) / 2;
+    const L = Defaults.path();
+    L.pts = pts.map(p => ({ x: p.x - cx, y: p.y - cy }));
+    L.x = cx; L.y = cy; L.closed = closed; L.smooth = smooth;
+    L.fill = App.colors.fg; L.strokeColor = App.colors.fg;
+    if (!closed) { L.fillOn = false; L.strokeWidth = 14; }
+    L.name = closed ? 'Trazado' : 'Línea a mano';
+    this.addLayer(L, undefined, 'Pluma');
+    return L;
+  },
+  addAdjust(o = {}) {
+    const L = Object.assign(Defaults.adjust(), o);
+    const arr = App.layers(), cur = App.selected();
+    L.id = uid();
+    arr.splice(cur ? arr.indexOf(cur) + 1 : arr.length, 0, L);
+    App.sel = L.id;
+    App.commit('Capa de ajuste');
+    this.refreshProps();
+    return L;
+  },
+  /* convierte capas (texto, forma, varias) en una capa de píxeles */
+  rasterize(list, name) {
+    const rs = 0.75, W = DESIGN_W * rs, H = DESIGN_H * rs;
+    const c = mkCanvas(W, H), x = ctx2d(c, true);
+    for (const L of list) if (L.visible) { if (L.type === 'adjust') applyAdjust(c, L, rs); else drawLayer(x, L, rs, false); }
+    const d = x.getImageData(0, 0, W, H).data;
+    let x0 = W, y0 = H, x1 = -1, y1 = -1;
+    for (let y = 0; y < H; y++) for (let xx = 0; xx < W; xx++) if (d[(y * W + xx) * 4 + 3] > 2) { if (xx < x0) x0 = xx; if (xx > x1) x1 = xx; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+    if (x1 < 0) { toast('No hay nada para rasterizar'); return null; }
+    const t2 = mkCanvas(x1 - x0 + 1, y1 - y0 + 1);
+    ctx2d(t2, true).drawImage(c, -x0, -y0);
+    const id = Assets.add({ kind: 'img', img: t2, w: t2.width, h: t2.height, url: null, revs: [], cur: 0, _rw: true });
+    const L = Defaults.image();
+    L.assetId = id; L.w = t2.width; L.h = t2.height; L.scale = 1 / rs;
+    L.x = (x0 + t2.width / 2) / rs; L.y = (y0 + t2.height / 2) / rs;
+    L.name = name || 'Rasterizado';
+    const arr = App.layers(), idx = Math.min(...list.map(l => arr.indexOf(l)));
+    for (const l of list) arr.splice(arr.indexOf(l), 1);
+    L.id = uid();
+    arr.splice(idx, 0, L);
+    App.sel = L.id;
+    App.commit(name ? 'Combinar' : 'Rasterizar');
+    this.refreshProps();
+    return L;
+  },
+  mergeDown() {
+    const L = App.selected(), arr = App.layers();
+    if (!L) return;
+    const i = arr.indexOf(L);
+    if (i <= 0) { toast('No hay capa debajo'); return; }
+    this.rasterize([arr[i - 1], L], arr[i - 1].name);
+  },
   addShape(kind, o = {}) {
     const L = Object.assign(Defaults.shape(), { shape: kind }, o);
     if (lumHex(App.project.shirt.color) >= 0.45 && !o.fill) { L.fill = '#141414'; L.strokeColor = '#141414'; }
-    L.name = o.name || ({ rect: 'Rectángulo', ellipse: 'Círculo', line: 'Línea', star: 'Estrella', triangle: 'Triángulo' })[kind] || 'Forma';
-    if (kind === 'line') { L.shape = 'rect'; L.h = 14; L.w = 1600; }
-    this.addLayer(L);
+    L.name = o.name || (SHAPES.find(s => s[0] === kind) || [0, 'Forma'])[1];
+    if (kind === 'line' && !o.w) { L.h = 14; L.w = 1600; }
+    this.addLayer(L, undefined, 'Forma');
   },
   duplicate() {
     const L = App.selected();
@@ -360,7 +549,7 @@ const Panels = {
     const st = P.scrollTop;
     P.innerHTML = '';
     const L = App.selected();
-    $('#propsTitle').textContent = L ? 'Propiedades · ' + ({ image: 'Imagen', text: 'Texto', shape: 'Forma' })[L.type] : 'Propiedades';
+    $('#propsTitle').textContent = L ? 'Propiedades · ' + ({ image: 'Imagen', text: 'Texto', shape: 'Forma', path: 'Trazado', adjust: 'Ajuste' })[L.type] : 'Propiedades';
     if (!L) {
       P.append(el('div', { class: 'empty' }, 'Seleccioná una capa o agregá una imagen.'),
         el('div', { class: 'secbody' },
@@ -369,8 +558,10 @@ const Panels = {
           el('p', { class: 'hint' }, 'Tip: pegá una imagen copiada de Pinterest/Google con Ctrl+V.')));
       return;
     }
+    if (L.type === 'adjust') { this.adjustProps(P, L); P.scrollTop = st; return; }
     if (L.type === 'image') this.imageProps(P, L);
     else if (L.type === 'text') this.textProps(P, L);
+    else if (L.type === 'path') this.pathProps(P, L);
     else this.shapeProps(P, L);
     this.commonProps(P, L);
     P.scrollTop = st;
@@ -457,7 +648,7 @@ const Panels = {
 
     P.append(UI.sec('Fondo / recorte', [
       el('p', { class: 'hint' }, 'Borrador (E) y Restaurar (R) pintan la máscara. Varita (W) borra un color con un clic.'),
-      UI.btns([['Quitar fondo auto', () => { autoRemoveBg(L, App.wand.tol); toast('Listo. Ajustá la tolerancia en la Varita (W) si quedó mal.'); }],
+      UI.btns([['Quitar fondo auto', () => { autoRemoveBg(L, App.t.tol); toast('Listo. Ajustá la tolerancia en la Varita (W) si quedó mal.'); }],
         ['Restaurar todo', () => { L.maskId = null; App.commit(); }]]),
       UI.btns([['Borrador', () => App.setTool('erase')], ['Restaurar', () => App.setTool('restore')], ['Varita', () => App.setTool('wand')]]),
       UI.range('Recorte izq.', L.crop, 'l', 0, 0.9, 0.005, { def: 0, dec: 3 }),
@@ -486,6 +677,7 @@ const Panels = {
       UI.btns([['Cargar fuente .ttf/.otf…', () => $('#fileFont').click(), 'Fuentes descargadas (dafont, etc.)']]),
       UI.select('Grosor', L, 'weight', [[100, 'Fino'], [300, 'Light'], [400, 'Normal'], [600, 'Semi'], [700, 'Negrita'], [900, 'Black']]),
       UI.check('Cursiva', L, 'italic'),
+      UI.check('Texto vertical', L, 'vertical'),
       UI.range('Tamaño', L, 'size', 20, 2400, 1),
       UI.color('Color', L, 'color', { swatches: ['#f1e7d3', '#ffffff', '#141414', '#d0202c', '#ff7a1a', '#c9a27a'] }),
       UI.range('Espaciado', L, 'spacing', -50, 300, 1, { def: 0 }),
@@ -500,7 +692,8 @@ const Panels = {
 
   shapeProps(P, L) {
     P.append(UI.sec('Forma', [
-      UI.select('Tipo', L, 'shape', [['rect', 'Rectángulo'], ['ellipse', 'Elipse'], ['triangle', 'Triángulo'], ['star', 'Estrella']]),
+      UI.select('Tipo', L, 'shape', SHAPES, { onChange: () => this.refreshProps() }),
+      L.shape === 'polygon' ? UI.range('Lados', L, 'sides', 3, 16, 1) : null,
       UI.range('Ancho', L, 'w', 4, 3000, 1),
       UI.range('Alto', L, 'h', 4, 3600, 1),
       UI.range('Redondeo', L, 'radius', 0, 1, 0.01, { def: 0 }),
@@ -525,13 +718,68 @@ const Panels = {
       UI.btns([['Centrar H', al(() => (L.x = DESIGN_W / 2))], ['Centrar V', al(() => (L.y = DESIGN_H / 2))], ['Arriba', al(() => { const b = Proc.bounds(L, Editor.rs()); L.y = b.h / 2 + 60; })]]),
       UI.btns([['Ajustar ancho', al(() => { const b = Proc.bounds(L, Editor.rs()); L.scale *= DESIGN_W / b.w; L.x = DESIGN_W / 2; })],
         ['Espejo H', al(() => (L.flipX = !L.flipX))], ['Espejo V', al(() => (L.flipY = !L.flipY))], ['Rotar 90°', al(() => (L.rot = ((L.rot + 90 + 180) % 360) - 180))]]),
+      UI.range('Estirar H', L, 'sx', -4, 4, 0.01, { def: 1 }),
+      UI.range('Estirar V', L, 'sy', -4, 4, 0.01, { def: 1 }),
+      UI.check('Máscara de recorte (se ve solo dentro de la capa de abajo)', L, 'clip', { onChange: () => this.refreshLayers() }),
       UI.btns([['Mover al otro lado', () => {
         const to = App.side === 'front' ? 'back' : 'front';
         const arr = App.layers(); arr.splice(arr.indexOf(L), 1);
         App.layers(to).push(L); App.sel = null; App.commit(); this.refreshProps();
         toast('Capa movida a ' + (to === 'back' ? 'la espalda' : 'el frente'));
-      }]])
+      }], ...(L.type !== 'image' ? [['Rasterizar', () => this.rasterize([L], null)]] : [])])
     ], false));
+    const w = L.warp;
+    P.append(UI.sec('Deformar', [
+      UI.select('Tipo', w, 'type', [['none', 'Ninguno'], ['arc', 'Arco'], ['wave', 'Ola'], ['flag', 'Bandera'], ['bulge', 'Inflar'], ['pinch', 'Comprimir'], ['rise', 'Subir']]),
+      UI.range('Intensidad', w, 'amount', -1, 1, 0.01, { def: 0.5 })
+    ], false, w.type !== 'none' ? 'activo' : ''));
+    const st = L.style;
+    P.append(UI.sec('Estilos de capa', [
+      UI.check('Sombra paralela', st, 'shadow'),
+      st.shadow ? [UI.color('Color', st, 'shColor'), UI.range('Opacidad', st, 'shOpacity', 0, 1, 0.01), UI.range('Desenfoque', st, 'shBlur', 0, 200, 1), UI.range('Distancia X', st, 'shX', -300, 300, 1), UI.range('Distancia Y', st, 'shY', -300, 300, 1)] : null,
+      UI.check('Resplandor exterior', st, 'glow'),
+      st.glow ? [UI.color('Color', st, 'glColor'), UI.range('Opacidad', st, 'glOpacity', 0, 1, 0.01), UI.range('Tamaño', st, 'glBlur', 2, 250, 1)] : null,
+      UI.check('Superposición de color', st, 'overlay'),
+      st.overlay ? [UI.color('Color', st, 'ovColor'), UI.range('Opacidad', st, 'ovOpacity', 0, 1, 0.01)] : null,
+      UI.check('Superposición de degradado', st, 'grad'),
+      st.grad ? [UI.color('Color 1', st, 'grA'), UI.color('Color 2', st, 'grB'), UI.range('Ángulo', st, 'grAngle', 0, 360, 1), UI.range('Opacidad', st, 'grOpacity', 0, 1, 0.01)] : null,
+      el('p', { class: 'hint' }, 'El trazo/contorno está en “Contorno y desgaste”.')
+    ].flat().filter(Boolean), false, (st.shadow || st.glow || st.overlay || st.grad) ? 'activo' : ''));
+    // al tildar/destildar un estilo se rearma el panel
+    P.querySelectorAll('details.sec:last-child input[type=checkbox]').forEach(c => c.addEventListener('change', () => setTimeout(() => this.refreshProps(), 0)));
+  },
+
+  pathProps(P, L) {
+    P.append(UI.sec('Trazado', [
+      el('p', { class: 'hint' }, 'Editá los puntos con Selección directa (A).'),
+      UI.check('Cerrado', L, 'closed'),
+      UI.check('Curvas suaves', L, 'smooth'),
+      UI.check('Relleno', L, 'fillOn'),
+      UI.color('Color relleno', L, 'fill', { swatches: ['#f1e7d3', '#141414', '#d0202c', '#ff7a1a'] }),
+      UI.range('Borde', L, 'strokeWidth', 0, 120, 1, { def: 0 }),
+      UI.color('Color borde', L, 'strokeColor'),
+      UI.btns([['Convertir en selección', () => { const p = L; Sel.shape(x => { x.translate(p.x, p.y); x.rotate(p.rot * Math.PI / 180); x.scale(p.scale * p.sx, p.scale * p.sy); x.beginPath(); pathFromPts(x, p.pts, true, p.smooth, 1, 0, 0); x.fill(); }, 'new'); }]])
+    ], true));
+    this.postProps(P, L);
+  },
+
+  adjustProps(P, A) {
+    const kinds = [['bc', 'Brillo / contraste'], ['hs', 'Tono / saturación'], ['bw', 'Blanco y negro'], ['invert', 'Invertir'], ['threshold', 'Umbral'], ['posterize', 'Posterizar'], ['halftone', 'Semitono (todo lo de abajo)'], ['custom', 'Personalizado']];
+    const kids = [el('p', { class: 'hint' }, 'Afecta a todas las capas que están debajo de esta. Ocultala o bajale la opacidad para comparar.'),
+      UI.select('Tipo', A, 'kind', kinds, { onChange: () => { setAdjustKind(A); this.refreshProps(); } }),
+      UI.range('Opacidad', A, 'opacity', 0, 1, 0.01, { def: 1 })];
+    const k = A.kind;
+    if (k === 'bc' || k === 'custom') kids.push(UI.range('Brillo', A, 'brightness', 0, 250, 1, { def: 100 }), UI.range('Contraste', A, 'contrast', 0, 300, 1, { def: 100 }));
+    if (k === 'hs' || k === 'custom') kids.push(UI.range('Tono (°)', A, 'hue', -180, 180, 1, { def: 0 }), UI.range('Saturación', A, 'saturate', 0, 300, 1, { def: 100 }));
+    if (k === 'bw' || k === 'custom') kids.push(UI.range('Blanco y negro', A, 'grayscale', 0, 100, 1, { def: 100 }), UI.range('Sepia', A, 'sepia', 0, 100, 1, { def: 0 }));
+    if (k === 'invert' || k === 'custom') kids.push(UI.range('Invertir', A, 'invert', 0, 100, 1, { def: 100 }));
+    if (k === 'threshold' || k === 'custom') kids.push(UI.range('Umbral', A, 'threshold', 0, 100, 1, { def: 50 }));
+    if (k === 'posterize' || k === 'custom') kids.push(UI.range('Niveles', A, 'posterize', 0, 16, 1, { def: 4 }));
+    if (k === 'custom') kids.push(UI.range('Desenfoque', A, 'blur', 0, 60, 0.5, { def: 0 }));
+    if (k === 'halftone') kids.push(UI.range('Tamaño trama', A, 'htCell', 6, 140, 1, { def: 30 }), UI.range('Ángulo', A, 'htAngle', 0, 90, 1, { def: 45 }),
+      UI.select('Forma punto', A, 'htShape', [['circle', 'Círculo'], ['square', 'Cuadrado'], ['diamond', 'Rombo'], ['line', 'Líneas'], ['cross', 'Cruz']]),
+      UI.color('Color tinta', A, 'htInk', { swatches: ['#f1e7d3', '#ffffff', '#141414'] }), UI.check('Puntos con color', A, 'htColor'), UI.check('Invertir tonos', A, 'htInvert'));
+    P.append(UI.sec('Capa de ajuste', kids, true));
   }
 };
 
@@ -627,3 +875,19 @@ const Presets = {
     setTimeout(step, 30);
   }
 };
+
+/* valores iniciales de cada tipo de capa de ajuste */
+function setAdjustKind(A) {
+  const d = Defaults.adjust();
+  for (const k of ['brightness', 'contrast', 'saturate', 'hue', 'grayscale', 'sepia', 'invert', 'blur', 'threshold', 'posterize', 'halftone']) A[k] = d[k];
+  switch (A.kind) {
+    case 'bc': A.contrast = 120; break;
+    case 'hs': A.saturate = 140; break;
+    case 'bw': A.grayscale = 100; break;
+    case 'invert': A.invert = 100; break;
+    case 'threshold': A.threshold = 50; break;
+    case 'posterize': A.posterize = 4; break;
+    case 'halftone': A.halftone = true; A.htInk = lumHex(App.project.shirt.color) < 0.45 ? '#f1e7d3' : '#141414'; A.htInvert = lumHex(App.project.shirt.color) >= 0.45; break;
+  }
+  A.name = { bc: 'Brillo/contraste', hs: 'Tono/saturación', bw: 'Blanco y negro', invert: 'Invertir', threshold: 'Umbral', posterize: 'Posterizar', halftone: 'Semitono', custom: 'Ajuste' }[A.kind];
+}

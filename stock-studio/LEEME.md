@@ -35,6 +35,21 @@ El proyecto se autoguarda en el navegador. Con **Guardar** descargás un archivo
 - Movimientos: 360° con pausas, 360° continuo, giro rápido, balanceo.
 - Exporta MP4 (Chrome/Edge actuales) listo para Reels / TikTok. Dejá la pestaña visible mientras graba.
 
+## Herramientas tipo Photopea (pestaña Diseño)
+- **Selección:** marco rectangular y elíptico (M), lazo, lazo poligonal y lazo magnético (L), selección rápida y varita (W). Shift suma, Alt resta. Menú Selección: todo, invertir, sujeto, expandir, contraer, desvanecer.
+- **Mover / recortar:** transformación libre (V: escalar, estirar, rotar), recortar (C).
+- **Retoque:** corrector puntual, pincel corrector, parche, ojos rojos (J); tampón de clonar y de motivo (S).
+- **Pintura:** pincel, lápiz, reemplazo de color (B); borrador, restaurar, borrador de fondos, borrador mágico (E); degradado y bote de pintura (G).
+- **Enfoque y tono:** desenfocar, enfocar, dedo (Y); sobreexponer, subexponer, esponja (O).
+- **Texto y vectores:** texto horizontal y vertical (T), pluma y pluma libre (P), selección directa (A), formas (U: rectángulo, redondeado, elipse, polígono, línea, flecha, corazón, rayo, corona, globo…).
+- **Vista:** mano (H), rotar vista (R), zoom (Z).
+- **Capas:** capas vacías, capas de ajuste (brillo/contraste, tono/saturación, B/N, invertir, umbral, posterizar, semitono), máscaras, máscara de recorte, combinar, rasterizar, deformar (arco, ola, bandera, inflar…), estilos (sombra, resplandor, superposición de color y degradado, contorno).
+- **Filtros:** desenfoque, enfocar, ruido, pixelar, ondas, posterizar, umbral, B/N, invertir, relieve, bordes, viñeta.
+- **Historial:** pestaña Historial al lado de Capas; clic en cualquier paso para volver.
+
+## Maquetas con tus fotos
+Vienen cargadas las fotos de STOCKSTORE (remera negra sobre cemento, frente y espalda). El estampado se apoya encima con los pliegues de la foto, y el video 360° recorta esa remera para girarla. Podés cambiarlas por fotos tuyas en *Maqueta y posts → Maqueta con tu foto*.
+
 ## Atajos
 `V` mover · `H` mano · `E` borrador · `R` restaurar · `W` varita · `T` texto · `I` cuentagotas ·
 `Ctrl+Z / Ctrl+Y` deshacer/rehacer · `Ctrl+D` duplicar · `Ctrl+V` pegar imagen · `Tab` frente/espalda ·
