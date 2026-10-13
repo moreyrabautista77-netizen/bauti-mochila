@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Stock Studio — Diseñador de remeras</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<header id="topbar">
+  <div class="brand"><span class="logo-mark">S</span><span>STOCK<b>STUDIO</b></span></div>
+  <nav class="tabs" id="viewTabs">
+    <button data-view="design" class="active">Diseño</button>
+    <button data-view="mockup">Maqueta y posts</button>
+    <button data-view="video">Video 360°</button>
+  </nav>
+  <div class="spacer"></div>
+  <input type="text" id="projName" title="Nombre del proyecto">
+  <button id="btnNew" title="Proyecto nuevo">Nuevo</button>
+  <button id="btnOpen" title="Abrir proyecto (.stock.json)">Abrir</button>
+  <button id="btnSave" title="Guardar proyecto (Ctrl+S)">Guardar</button>
+  <button id="btnPrint" class="primary" title="PNG en alta resolución para imprimir">⬇ Exportar para imprimir</button>
+  <span class="sep"></span>
+  <button id="btnUndo" class="ghost" title="Deshacer (Ctrl+Z)">↶</button>
+  <button id="btnRedo" class="ghost" title="Rehacer (Ctrl+Y)">↷</button>
+  <button id="btnHelp" class="ghost" title="Atajos y ayuda">?</button>
+</header>
+
+<main>
+  <!-- ============ DISEÑO ============ -->
+  <section class="view active" id="view-design">
+    <aside id="toolbar"></aside>
+    <div id="stageCol">
+      <div id="optbar"></div>
+      <div id="stageWrap">
+        <canvas id="stage"></canvas>
+        <div id="emptyHint">
+          <div class="box">
+            <h3>Empezá con una foto</h3>
+            <p>Arrastrá una imagen, pegala con <span class="kbd">Ctrl+V</span> o elegila del disco. Después aplicá un estilo (semitono, vintage, stencil…).</p>
+            <button class="primary" id="btnEmptyAdd">Elegir imagen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <aside class="rpanel">
+      <div id="layersBox">
+        <h4>Capas <span class="spacer"></span><span id="sideLbl" style="color:var(--acc)"></span></h4>
+        <div id="layersList"></div>
+        <div class="lfoot" id="layersFoot"></div>
+      </div>
+      <div id="propsBox">
+        <h4 id="propsTitle">Propiedades</h4>
+        <div class="scroll" id="propsPanel"></div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- ============ MAQUETA ============ -->
+  <section class="view" id="view-mockup">
+    <div class="pvcol">
+      <div class="pvbar" id="mockBar"></div>
+      <div class="previewWrap"><canvas id="mockCanvas" width="1080" height="1350"></canvas></div>
+    </div>
+    <aside class="rpanel"><h4>Maqueta</h4><div class="scroll" id="mockPanel"></div></aside>
+  </section>
+
+  <!-- ============ VIDEO ============ -->
+  <section class="view" id="view-video">
+    <div class="pvcol">
+      <div class="pvbar" id="vidBar"></div>
+      <div class="previewWrap"><canvas id="vidCanvas" width="1080" height="1920"></canvas></div>
+    </div>
+    <aside class="rpanel"><h4>Animación</h4><div class="scroll" id="vidPanel"></div></aside>
+  </section>
+</main>
+
+<div id="toast"></div>
+<div class="busy" id="busy"><div id="busyMsg">Procesando…</div></div>
+<div class="modal" id="helpModal"><div class="card" id="helpCard"></div></div>
+
+<input type="file" id="fileImg" accept="image/*" multiple hidden>
+<input type="file" id="fileProj" accept=".json,application/json" hidden>
+<input type="file" id="fileAsset" accept="image/*" hidden>
+<input type="file" id="fileFont" accept=".ttf,.otf,.woff,.woff2" hidden>
+
+<script src="js/util.js"></script>
+<script src="js/state.js"></script>
+<script src="js/process.js"></script>
+<script src="js/shirt.js"></script>
+<script src="js/editor.js"></script>
+<script src="js/panels.js"></script>
+<script src="js/mockup.js"></script>
+<script src="js/anim.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
