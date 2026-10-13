@@ -9,13 +9,17 @@ const Proc = {
   cache: new Map(),
   key(L, rs) {
     const o = Object.assign({}, L);
-    delete o.x; delete o.y; delete o.rot; delete o.opacity; delete o.blend; delete o.visible; delete o.locked; delete o.name; delete o.id;
+    for (const k of ['x', 'y', 'rot', 'opacity', 'blend', 'visible', 'locked', 'name', 'id', 'sx', 'sy', 'warp', 'clip', 'style']) delete o[k];
     let k = JSON.stringify(o) + '|' + rs;
+    const st = L.style;
+    if (st && (st.overlay || st.grad)) k += JSON.stringify([st.overlay, st.ovColor, st.ovOpacity, st.grad, st.grA, st.grB, st.grAngle, st.grOpacity]);
     if (L.maskId) k += '|m' + Assets.rev.get(L.maskId);
+    if (L.assetId) { const a = Assets.get(L.assetId); k += '|a' + (a ? a.live || 0 : 0); }
     if (L.type === 'text') k += '|f' + Fonts.rev;
     return k;
   },
   get(L, rs, allowStale) {
+    if (L.type === 'adjust') return null;
     const ck = L.id + '@' + rs;
     const c = this.cache.get(ck);
     if (c && allowStale && c.out) return c.out;
@@ -23,14 +27,16 @@ const Proc = {
     if (c && c.key === k) return c.out;
     let out = null;
     try {
-      out = L.type === 'image' ? renderImage(L, rs) : L.type === 'text' ? renderText(L, rs) : renderShape(L, rs);
+      if (L.type === 'image') Assets.syncRev(L.assetId, L.pix || 0);
+      out = L.type === 'image' ? renderImage(L, rs) : L.type === 'text' ? renderText(L, rs) : L.type === 'path' ? renderPath(L, rs) : renderShape(L, rs);
       if (out) out = postProcess(out, L);
     } catch (e) { console.error('render capa', e); }
     this.cache.set(ck, { key: k, out });
     return out;
   },
-  /* tamaño de la capa en px de diseño */
+  /* tamaño de la capa en px de diseño (sin escala libre) */
   bounds(L, rs = 0.125) {
+    if (L.type === 'adjust') return { w: DESIGN_W, h: DESIGN_H };
     const R = this.get(L, rs, true);
     if (!R) return { w: 10, h: 10 };
     return { w: R.canvas.width * R.k - (R.pad || 0) * 2 * R.k, h: R.canvas.height * R.k - (R.pad || 0) * 2 * R.k };
@@ -44,19 +50,143 @@ const Proc = {
   }
 };
 
+/* silueta difuminada de una capa (sombra / resplandor) */
+function styleSil(R, kind, color, blurDesign) {
+  const blur = Math.max(0, blurDesign / R.k);
+  const key = kind + color + blur.toFixed(1);
+  if (R['_' + kind] && R['_' + kind].key === key) return R['_' + kind];
+  const pad = Math.ceil(blur * 2) + 2;
+  const s = mkCanvas(R.canvas.width, R.canvas.height), sx = ctx2d(s);
+  sx.drawImage(R.canvas, 0, 0);
+  sx.globalCompositeOperation = 'source-in';
+  sx.fillStyle = color;
+  sx.fillRect(0, 0, s.width, s.height);
+  const c = mkCanvas(s.width + pad * 2, s.height + pad * 2), x = ctx2d(c);
+  if (blur > 0) x.filter = `blur(${blur}px)`;
+  x.drawImage(s, pad, pad);
+  return (R['_' + kind] = { key, c, pad });
+}
+
+/* dibuja una imagen deformada (arco, ola, bandera, inflar…) */
+function drawWarped(ctx, img, x, y, w, h, warp) {
+  if (!warp || warp.type === 'none' || !warp.amount) { ctx.drawImage(img, x, y, w, h); return; }
+  const N = 64, iw = img.width, ih = img.height, a = warp.amount;
+  for (let i = 0; i < N; i++) {
+    const u = (i + 0.5) / N, t = 2 * u - 1;
+    let dy = 0, sy = 1;
+    switch (warp.type) {
+      case 'arc': dy = -a * h * 0.25 * (1 - t * t); break;
+      case 'wave': dy = a * h * 0.12 * Math.sin(u * Math.PI * 4); break;
+      case 'flag': dy = a * h * 0.14 * Math.sin(u * Math.PI * 2) * u; break;
+      case 'bulge': sy = 1 + a * 0.4 * (1 - t * t); break;
+      case 'pinch': sy = 1 - a * 0.4 * (1 - t * t); break;
+      case 'rise': dy = -a * h * 0.3 * (u - 0.5); break;
+    }
+    ctx.drawImage(img, i / N * iw, 0, iw / N, ih, x + i / N * w, y + dy + h * (1 - sy) / 2, w / N + 0.7, h * sy);
+  }
+}
+
 /* dibuja una capa en un contexto cuyo sistema de coordenadas es "px de diseño * rs" */
-function drawLayer(ctx, L, rs, stale) {
+function drawLayer(ctx, L, rs, stale, o = {}) {
+  if (L.type === 'adjust') return;
   const R = Proc.get(L, rs, stale);
   if (!R) return;
-  ctx.save();
-  ctx.globalAlpha = L.opacity;
-  ctx.globalCompositeOperation = L.blend || 'source-over';
-  ctx.translate(L.x * rs, L.y * rs);
-  ctx.rotate(L.rot * Math.PI / 180);
   const w = R.canvas.width * R.k * rs, h = R.canvas.height * R.k * rs;
+  const st = L.style;
+  ctx.save();
+  ctx.globalAlpha = o.noAlpha ? 1 : L.opacity;
+  ctx.globalCompositeOperation = o.op || L.blend || 'source-over';
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(R.canvas, -w / 2, -h / 2, w, h);
+  ctx.translate(L.x * rs, L.y * rs);
+  const place = (img, pad, dx = 0, dy = 0) => {
+    ctx.save();
+    ctx.translate(dx, dy);
+    ctx.rotate(L.rot * Math.PI / 180);
+    ctx.scale(L.sx || 1, L.sy || 1);
+    const k = R.k * rs;
+    drawWarped(ctx, img, -w / 2 - pad * k, -h / 2 - pad * k, w + pad * 2 * k, h + pad * 2 * k, L.warp);
+    ctx.restore();
+  };
+  if (st && !o.noStyle) {
+    if (st.shadow) {
+      const S = styleSil(R, 'sh', st.shColor, st.shBlur);
+      const a = ctx.globalAlpha; ctx.globalAlpha = a * st.shOpacity;
+      place(S.c, S.pad, st.shX * rs, st.shY * rs);
+      ctx.globalAlpha = a;
+    }
+    if (st.glow) {
+      const S = styleSil(R, 'gl', st.glColor, st.glBlur);
+      const a = ctx.globalAlpha; ctx.globalAlpha = a * st.glOpacity;
+      place(S.c, S.pad); place(S.c, S.pad);
+      ctx.globalAlpha = a;
+    }
+  }
+  place(R.canvas, 0);
   ctx.restore();
+}
+
+/* capa de ajuste: modifica todo lo que está debajo */
+function applyAdjust(acc, A, rs) {
+  const W = acc.width, H = acc.height;
+  const t = mkCanvas(W, H), x = ctx2d(t, true);
+  const f = [];
+  if (A.brightness !== 100) f.push(`brightness(${A.brightness}%)`);
+  if (A.contrast !== 100) f.push(`contrast(${A.contrast}%)`);
+  if (A.saturate !== 100) f.push(`saturate(${A.saturate}%)`);
+  if (A.hue) f.push(`hue-rotate(${A.hue}deg)`);
+  if (A.grayscale) f.push(`grayscale(${A.grayscale}%)`);
+  if (A.sepia) f.push(`sepia(${A.sepia}%)`);
+  if (A.invert) f.push(`invert(${A.invert}%)`);
+  if (A.blur) f.push(`blur(${A.blur * rs}px)`);
+  x.filter = f.length ? f.join(' ') : 'none';
+  x.drawImage(acc, 0, 0);
+  x.filter = 'none';
+  if (A.threshold > 0 || A.posterize > 1 || A.halftone) {
+    const id = x.getImageData(0, 0, W, H), d = id.data;
+    if (A.posterize > 1) { const st = 255 / (A.posterize - 1); for (let i = 0; i < d.length; i += 4) for (let k = 0; k < 3; k++) d[i + k] = Math.round(d[i + k] / st) * st; }
+    if (A.threshold > 0) for (let i = 0; i < d.length; i += 4) { const l = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]; d[i] = d[i + 1] = d[i + 2] = l >= A.threshold * 2.55 ? 255 : 0; }
+    if (A.halftone) {
+      const cov = new Float32Array(W * H);
+      for (let p = 0; p < W * H; p++) { const i = p * 4, l = (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]) / 255; cov[p] = A.htInvert ? 1 - l : l; }
+      halftoneRender(x, d, cov, W, H, { cell: A.htCell, angle: A.htAngle, shape: A.htShape, dotScale: 1, minDot: 0.04, smooth: 0.6, colorDots: A.htColor, ink: A.htInk }, rs, null);
+    } else x.putImageData(id, 0, 0);
+  }
+  const ax = ctx2d(acc);
+  ax.save();
+  if (A.opacity >= 1) { ax.clearRect(0, 0, W, H); ax.drawImage(t, 0, 0); }
+  else { ax.globalAlpha = A.opacity; ax.drawImage(t, 0, 0); }
+  ax.restore();
+}
+
+/* compone todas las capas de un lado (con ajustes y máscaras de recorte) */
+function composeLayers(side, rs, opts = {}) {
+  const W = Math.round(DESIGN_W * rs), H = Math.round(DESIGN_H * rs);
+  const c = mkCanvas(W, H), x = ctx2d(c);
+  if (opts.bg) { x.fillStyle = opts.bg; x.fillRect(0, 0, W, H); }
+  const layers = App.project.sides[side].layers;
+  for (let i = 0; i < layers.length; i++) {
+    const L = layers[i];
+    if (!L.visible) continue;
+    if (L.type === 'adjust') { applyAdjust(c, L, rs); continue; }
+    if (L.clip) {
+      let b = null;
+      for (let j = i - 1; j >= 0; j--) { const B = layers[j]; if (B.type === 'adjust') continue; if (!B.clip) { b = B; break; } }
+      if (b) {
+        const t = mkCanvas(W, H), tx = ctx2d(t);
+        if (b.visible) {
+          drawLayer(tx, L, rs, opts.stale, { op: 'source-over' });
+          drawLayer(tx, b, rs, opts.stale, { noStyle: true, noAlpha: true, op: 'destination-in' });
+        }
+        x.save();
+        x.globalCompositeOperation = L.blend || 'source-over';
+        x.drawImage(t, 0, 0);
+        x.restore();
+        continue;
+      }
+    }
+    drawLayer(x, L, rs, opts.stale);
+  }
+  return c;
 }
 
 /* compone un lado completo (frente / espalda) */
@@ -65,13 +195,11 @@ function renderSide(side, rs, opts = {}) {
   const ck = side + '|' + rs + '|' + (opts.bg || '');
   const c0 = SideCache.get(ck);
   if (c0 && c0.v === App.version && !opts.fresh) return c0.c;
-  const c = mkCanvas(DESIGN_W * rs, DESIGN_H * rs), x = ctx2d(c);
-  if (opts.bg) { x.fillStyle = opts.bg; x.fillRect(0, 0, c.width, c.height); }
-  for (const L of App.project.sides[side].layers) if (L.visible) drawLayer(x, L, rs, false);
+  const c = composeLayers(side, rs, { bg: opts.bg });
   if (!opts.fresh) SideCache.set(ck, { v: App.version, c });
   return c;
 }
-const sideHasContent = side => App.project.sides[side].layers.some(l => l.visible);
+const sideHasContent = side => App.project.sides[side].layers.some(l => l.visible && l.type !== 'adjust');
 
 /* ---------- curva tonal ---------- */
 function toneLUT(a) {
@@ -470,8 +598,7 @@ function applyDistress(c, amount, scale, pr) {
 }
 
 function postProcess(out, L) {
-  const P = L.post;
-  if (!P) return out;
+  const P = L.post || { outline: 0, distress: 0 };
   let c = out.canvas, pad = 0;
   const pr = 1 / out.k;
   if (P.outline > 0) {
@@ -497,6 +624,20 @@ function postProcess(out, L) {
     c = o;
   }
   if (P.distress > 0) applyDistress(c, P.distress, P.distressScale || 1, pr);
+  const st = L.style;
+  if (st && (st.overlay || st.grad)) {
+    const x = ctx2d(c);
+    x.save();
+    x.globalCompositeOperation = 'source-atop';
+    if (st.grad) {
+      const a = st.grAngle * Math.PI / 180, cx = c.width / 2, cy = c.height / 2, r = Math.hypot(cx, cy);
+      const g = x.createLinearGradient(cx - Math.cos(a) * r, cy - Math.sin(a) * r, cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+      g.addColorStop(0, st.grA); g.addColorStop(1, st.grB);
+      x.globalAlpha = st.grOpacity; x.fillStyle = g; x.fillRect(0, 0, c.width, c.height);
+    }
+    if (st.overlay) { x.globalAlpha = st.ovOpacity; x.fillStyle = st.ovColor; x.fillRect(0, 0, c.width, c.height); }
+    x.restore();
+  }
   return { canvas: c, k: out.k, pad };
 }
 
@@ -512,6 +653,7 @@ function renderText(L, rs) {
   const sw = (L.strokeWidth || 0) * s;
   const pad = Math.ceil(sw + fp * 0.3 + 2);
   if (L.arc && Math.abs(L.arc) >= 1 && lines.length === 1) return renderArcText(L, rs, fp, sw, pad);
+  if (L.vertical) return renderVerticalText(L, rs, fp, sw, pad, lines);
   const widths = lines.map(t => m.measureText(t).width);
   const lh = fp * L.lineHeight;
   const W = Math.ceil(Math.max(...widths, 1) + pad * 2), H = Math.ceil(lh * (lines.length - 1) + fp * 1.3 + pad * 2);
@@ -526,6 +668,30 @@ function renderText(L, rs) {
     if (sw > 0) { x.strokeStyle = L.strokeColor; x.lineWidth = sw * 2; x.strokeText(t, tx, y); }
     x.fillStyle = L.color;
     x.fillText(t, tx, y);
+  });
+  return { canvas: c, k: 1 / rs };
+}
+
+function renderVerticalText(L, rs, fp, sw, pad, lines) {
+  const s = L.scale * rs;
+  const m = ctx2d(mkCanvas(2, 2));
+  m.font = fontStr(L, fp);
+  const colW = fp * L.lineHeight * 1.05, step = fp * 1.0 + L.spacing * s;
+  const maxN = Math.max(...lines.map(t => [...t].length), 1);
+  const W = Math.ceil(colW * lines.length + pad * 2), H = Math.ceil(step * maxN + pad * 2);
+  const c = mkCanvas(W, H), x = ctx2d(c);
+  x.font = fontStr(L, fp);
+  x.textAlign = 'center';
+  x.textBaseline = 'middle';
+  x.lineJoin = 'round';
+  lines.forEach((t, li) => {
+    const cx = pad + colW * (li + 0.5);
+    [...t].forEach((ch, i) => {
+      const cy = pad + step * (i + 0.5);
+      if (sw > 0) { x.strokeStyle = L.strokeColor; x.lineWidth = sw * 2; x.strokeText(ch, cx, cy); }
+      x.fillStyle = L.color;
+      x.fillText(ch, cx, cy);
+    });
   });
   return { canvas: c, k: 1 / rs };
 }
@@ -572,22 +738,67 @@ function renderArcText(L, rs, fp, sw, pad) {
 }
 
 /* ---------- formas ---------- */
+const SHAPES = [['rect', 'Rectángulo'], ['rrect', 'Rect. redondeado'], ['ellipse', 'Elipse'], ['polygon', 'Polígono'], ['star', 'Estrella'],
+  ['triangle', 'Triángulo'], ['line', 'Línea'], ['arrow', 'Flecha'], ['heart', 'Corazón'], ['bolt', 'Rayo'], ['crown', 'Corona'],
+  ['bubble', 'Globo de texto'], ['check', 'Tilde'], ['ring', 'Anillo']];
+function shapePath(x, kind, w, h, L) {
+  x.beginPath();
+  switch (kind) {
+    case 'ellipse': x.ellipse(w / 2, h / 2, w / 2, h / 2, 0, 0, Math.PI * 2); break;
+    case 'ring': x.ellipse(w / 2, h / 2, w / 2, h / 2, 0, 0, Math.PI * 2); x.ellipse(w / 2, h / 2, w * 0.32, h * 0.32, 0, 0, Math.PI * 2, true); break;
+    case 'star': for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? 0.42 : 1; x.lineTo(w / 2 + Math.cos(a) * w / 2 * r, h / 2 + Math.sin(a) * h / 2 * r * 1.05 + h * 0.03); } x.closePath(); break;
+    case 'polygon': { const n = Math.max(3, L.sides || 6); for (let i = 0; i < n; i++) { const a = -Math.PI / 2 + i * Math.PI * 2 / n; x.lineTo(w / 2 + Math.cos(a) * w / 2, h / 2 + Math.sin(a) * h / 2); } x.closePath(); break; }
+    case 'triangle': x.moveTo(w / 2, 0); x.lineTo(w, h); x.lineTo(0, h); x.closePath(); break;
+    case 'line': x.rect(0, 0, w, h); break;
+    case 'arrow': x.moveTo(0, h * 0.35); x.lineTo(w * 0.62, h * 0.35); x.lineTo(w * 0.62, 0); x.lineTo(w, h / 2); x.lineTo(w * 0.62, h); x.lineTo(w * 0.62, h * 0.65); x.lineTo(0, h * 0.65); x.closePath(); break;
+    case 'heart': x.moveTo(w / 2, h * 0.95); x.bezierCurveTo(-w * 0.15, h * 0.45, w * 0.15, -h * 0.15, w / 2, h * 0.25); x.bezierCurveTo(w * 0.85, -h * 0.15, w * 1.15, h * 0.45, w / 2, h * 0.95); x.closePath(); break;
+    case 'bolt': [[0.58, 0], [0.12, 0.56], [0.45, 0.56], [0.36, 1], [0.88, 0.4], [0.54, 0.4], [0.7, 0]].forEach(([a, b], i) => (i ? x.lineTo(a * w, b * h) : x.moveTo(a * w, b * h))); x.closePath(); break;
+    case 'crown': [[0, 0.25], [0.25, 0.6], [0.5, 0], [0.75, 0.6], [1, 0.25], [0.9, 1], [0.1, 1]].forEach(([a, b], i) => (i ? x.lineTo(a * w, b * h) : x.moveTo(a * w, b * h))); x.closePath(); break;
+    case 'bubble': x.roundRect(0, 0, w, h * 0.78, Math.min(w, h) * 0.15); x.moveTo(w * 0.2, h * 0.7); x.lineTo(w * 0.12, h); x.lineTo(w * 0.42, h * 0.74); x.closePath(); break;
+    case 'check': x.moveTo(0, h * 0.55); x.lineTo(w * 0.18, h * 0.38); x.lineTo(w * 0.38, h * 0.62); x.lineTo(w * 0.82, 0); x.lineTo(w, h * 0.17); x.lineTo(w * 0.38, h); x.closePath(); break;
+    case 'rrect': x.roundRect(0, 0, w, h, Math.min(w, h) / 2 * Math.max(0.15, clamp(L.radius, 0, 1))); break;
+    default: x.roundRect(0, 0, w, h, Math.min(w, h) / 2 * clamp(L.radius, 0, 1));
+  }
+}
 function renderShape(L, rs) {
   const s = L.scale * rs, w = Math.max(1, L.w * s), h = Math.max(1, L.h * s), sw = (L.strokeWidth || 0) * s;
   const pad = Math.ceil(sw + 2);
   const c = mkCanvas(w + pad * 2, h + pad * 2), x = ctx2d(c);
   x.translate(pad, pad);
-  x.beginPath();
-  if (L.shape === 'ellipse') x.ellipse(w / 2, h / 2, w / 2, h / 2, 0, 0, Math.PI * 2);
-  else if (L.shape === 'star') {
-    for (let i = 0; i < 10; i++) {
-      const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? 0.42 : 1;
-      x.lineTo(w / 2 + Math.cos(a) * w / 2 * r, h / 2 + Math.sin(a) * h / 2 * r * 1.05 + h * 0.03);
-    }
-    x.closePath();
-  } else if (L.shape === 'triangle') { x.moveTo(w / 2, 0); x.lineTo(w, h); x.lineTo(0, h); x.closePath(); }
-  else x.roundRect(0, 0, w, h, Math.min(w, h) / 2 * clamp(L.radius, 0, 1));
-  if (L.fillOn) { x.fillStyle = L.fill; x.fill(); }
+  shapePath(x, L.shape, w, h, L);
+  if (L.fillOn) { x.fillStyle = L.fill; x.fill('evenodd'); }
   if (sw > 0) { x.strokeStyle = L.strokeColor; x.lineWidth = sw; x.lineJoin = 'round'; x.stroke(); }
   return { canvas: c, k: 1 / rs, padPx: pad };
+}
+
+/* ---------- trazados de pluma ---------- */
+function pathFromPts(x, pts, closed, smooth, s, ox, oy) {
+  const P = pts.map(p => ({ x: p.x * s + ox, y: p.y * s + oy }));
+  if (!P.length) return;
+  x.moveTo(P[0].x, P[0].y);
+  if (!smooth || P.length < 3) { for (let i = 1; i < P.length; i++) x.lineTo(P[i].x, P[i].y); if (closed) x.closePath(); return; }
+  const n = P.length, get = i => closed ? P[(i + n) % n] : P[clamp(i, 0, n - 1)];
+  const last = closed ? n : n - 1;
+  for (let i = 0; i < last; i++) {
+    const p0 = get(i - 1), p1 = get(i), p2 = get(i + 1), p3 = get(i + 2);
+    x.bezierCurveTo(p1.x + (p2.x - p0.x) / 6, p1.y + (p2.y - p0.y) / 6, p2.x - (p3.x - p1.x) / 6, p2.y - (p3.y - p1.y) / 6, p2.x, p2.y);
+  }
+  if (closed) x.closePath();
+}
+function pathBox(pts) {
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for (const p of pts) { x0 = Math.min(x0, p.x); y0 = Math.min(y0, p.y); x1 = Math.max(x1, p.x); y1 = Math.max(y1, p.y); }
+  return { x0, y0, x1, y1 };
+}
+function renderPath(L, rs) {
+  const s = L.scale * rs, sw = (L.strokeWidth || 0) * s;
+  const b = pathBox(L.pts);
+  const ext = Math.max(Math.abs(b.x0), Math.abs(b.x1)) * 1.15, eyt = Math.max(Math.abs(b.y0), Math.abs(b.y1)) * 1.15;
+  const pad = Math.ceil(sw + 4);
+  const c = mkCanvas(ext * 2 * s + pad * 2, eyt * 2 * s + pad * 2), x = ctx2d(c);
+  x.beginPath();
+  pathFromPts(x, L.pts, L.closed, L.smooth, s, c.width / 2, c.height / 2);
+  if (L.fillOn && L.closed) { x.fillStyle = L.fill; x.fill(); }
+  if (sw > 0) { x.strokeStyle = L.strokeColor; x.lineWidth = sw; x.lineJoin = 'round'; x.lineCap = 'round'; x.stroke(); }
+  return { canvas: c, k: 1 / rs };
 }

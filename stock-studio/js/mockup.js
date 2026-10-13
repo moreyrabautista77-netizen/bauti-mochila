@@ -108,13 +108,14 @@ function drawOverlays(x, W, H, m, alpha = 1) {
 /* dibuja una remera (textura + sombra) centrada en (cx, cy) con tamaño S */
 function placeShirt(x, side, cx, cy, S, m, opts = {}) {
   const size = Math.max(64, Math.round(S));
-  const tex = Shirt.render(side, size, opts);
-  const top = cy - S * (opts.hanger ? 0.426 : 0.506);
+  const ph = usePhoto() ? photoTex(side, size) : null;
+  const tex = ph ? ph.c : Shirt.render(side, size, opts);
+  const top = cy - S * (opts.hanger ? (ph ? ph.center - 0.08 : 0.426) : (ph ? ph.center : 0.506));
   if (m.shadow > 0) {
     x.save();
     x.globalAlpha = m.shadow * (opts.hanger ? 0.75 : 1);
     const off = opts.hanger ? [S * 0.035, S * 0.045] : [S * 0.01, S * 0.022];
-    x.drawImage(Shirt.shadow(Math.min(size, 900)), cx - S / 2 + off[0], top + off[1], S, S);
+    x.drawImage(ph ? ph.shadow : Shirt.shadow(Math.min(size, 900)), cx - S / 2 + off[0], top + off[1], S, S);
     x.restore();
   }
   x.drawImage(tex, cx - S / 2, top, S, S);
@@ -176,25 +177,130 @@ function drawPhotoShirt(x, side, rx, ry, rw, rh, zoom = 1) {
   x.save();
   x.beginPath(); x.rect(rx, ry, rw, rh); x.clip();
   x.drawImage(a.img, ox, oy, a.w * s, a.h * s);
+  const r = paintPhotoPrint(x, side, a, P, s, ox, oy);
+  x.restore();
+  return { side, a, P, s, ox, oy, ...r };
+}
+/* estampado sobre la foto colocada con escala s y origen (ox, oy) */
+function paintPhotoPrint(x, side, a, P, s, ox, oy) {
   const pw = P.w * a.w * s, ph = pw * DESIGN_H / DESIGN_W;
   const cx = ox + P.x * a.w * s, cy = oy + P.y * a.h * s;
   if (sideHasContent(side)) {
     const q = [0.0625, 0.125, 0.1875, 0.25, 0.375, 0.5, 0.75, 1].find(v => v >= pw * 1.3 / DESIGN_W) || 1;
     const tex = Shirt.printTexture(renderSide(side, q));
+    x.save();
     x.translate(cx, cy);
     x.rotate(P.rot * Math.PI / 180);
     x.globalAlpha = 0.96;
-    x.drawImage(photoShade(tex, a, P, m.photo.strength, side), -pw / 2, -ph / 2, pw, ph);
+    x.drawImage(photoShade(tex, a, P, App.project.mockup.photo.strength, side), -pw / 2, -ph / 2, pw, ph);
+    x.restore();
   }
-  x.restore();
-  return { side, a, P, s, ox, oy, pw, ph, cx, cy };
+  return { pw, ph, cx, cy };
+}
+/* separa la remera del fondo de la foto (para el video 360) y arma el fondo limpio */
+function photoCutout(a) {
+  if (a._cut) return a._cut;
+  const w = a.w, h = a.h;
+  const c = mkCanvas(w, h), x = ctx2d(c, true);
+  x.drawImage(a.img, 0, 0);
+  const id = x.getImageData(0, 0, w, h), d = id.data;
+  const lum = new Float32Array(w * h);
+  for (let p = 0; p < w * h; p++) lum[p] = 0.299 * d[p * 4] + 0.587 * d[p * 4 + 1] + 0.114 * d[p * 4 + 2];
+  // umbral automático: entre la remera (oscura) y el fondo (más claro)
+  let bgSum = 0, n = 0;
+  for (let xx = 0; xx < w; xx++) { bgSum += lum[xx] + lum[(h - 1) * w + xx]; n += 2; }
+  const bgL = bgSum / n, cL = lum[Math.round(h * 0.45) * w + (w >> 1)];
+  const thr = (bgL + cL) / 2;
+  const dark = lum[Math.round(h * 0.45) * w + (w >> 1)] < bgL;
+  const isShirt = p => (dark ? lum[p] < thr : lum[p] > thr);
+  // componente conectada desde el centro
+  const m = new Uint8Array(w * h), st = new Int32Array(w * h);
+  let sp = 0;
+  const seed = Math.round(h * 0.45) * w + (w >> 1);
+  m[seed] = 1; st[sp++] = seed;
+  while (sp) {
+    const p = st[--sp], px = p % w;
+    for (const q of [px > 0 ? p - 1 : -1, px < w - 1 ? p + 1 : -1, p - w, p + w]) if (q >= 0 && q < w * h && !m[q] && isShirt(q)) { m[q] = 1; st[sp++] = q; }
+  }
+  // rellenar agujeros (estampados claros dentro de la remera)
+  const out = new Uint8Array(w * h);
+  sp = 0;
+  for (let xx = 0; xx < w; xx++) for (const q of [xx, (h - 1) * w + xx]) if (!m[q] && !out[q]) { out[q] = 1; st[sp++] = q; }
+  for (let y = 0; y < h; y++) for (const q of [y * w, y * w + w - 1]) if (!m[q] && !out[q]) { out[q] = 1; st[sp++] = q; }
+  while (sp) {
+    const p = st[--sp], px = p % w;
+    for (const q of [px > 0 ? p - 1 : -1, px < w - 1 ? p + 1 : -1, p - w, p + w]) if (q >= 0 && q < w * h && !m[q] && !out[q]) { out[q] = 1; st[sp++] = q; }
+  }
+  let x0 = w, y0 = h, x1 = 0, y1 = 0;
+  const mk = mkCanvas(w, h), mx = ctx2d(mk, true), md = mx.createImageData(w, h);
+  for (let p = 0; p < w * h; p++) if (!out[p]) {
+    md.data[p * 4 + 3] = 255;
+    const px = p % w, py = (p / w) | 0;
+    if (px < x0) x0 = px; if (px > x1) x1 = px; if (py < y0) y0 = py; if (py > y1) y1 = py;
+  }
+  mx.putImageData(md, 0, 0);
+  const mask = mkCanvas(w, h), mmx = ctx2d(mask);
+  mmx.filter = 'blur(0.7px)';
+  mmx.drawImage(mk, 0, 0);
+  // fondo limpio: rellena la remera (y su sombra) con el cemento de alrededor
+  const hole = new Uint8Array(w * h), R = Math.max(4, Math.round(w * 0.014));
+  const dil = mkCanvas(w, h), dx = ctx2d(dil, true);
+  dx.filter = `blur(${R}px)`;
+  dx.drawImage(mk, 0, 0);
+  const dd = dx.getImageData(0, 0, w, h).data;
+  for (let p = 0; p < w * h; p++) if (dd[p * 4 + 3] > 3) hole[p] = 1;
+  const cd = new Uint8ClampedArray(d);
+  inpaint(cd, w, h, hole);
+  const r = mulberry32(5);
+  const nz = ctx2d(smoothNoise(w, h, 6, 4, 31, 1.3), true).getImageData(0, 0, w, h).data;
+  for (let p = 0; p < w * h; p++) if (hole[p]) { const v = (nz[p * 4] - 128) * 0.45 + (r() - 0.5) * 20; cd[p * 4] += v; cd[p * 4 + 1] += v; cd[p * 4 + 2] += v; }
+  const clean = mkCanvas(w, h);
+  ctx2d(clean).putImageData(new ImageData(cd, w, h), 0, 0);
+  return (a._cut = { mask, clean, bbox: { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 } });
+}
+
+const _photoTex = new Map();
+function photoTex(side, T) {
+  const { a, P } = photoFor(side), cut = photoCutout(a);
+  const key = [App.version, T, a.w, P.x, P.y, P.w, P.rot].join('|');
+  const hit = _photoTex.get(side);
+  if (hit && hit.key === key) return hit.v;
+  const k = (0.9 * T) / cut.bbox.w, ox = 0.05 * T - cut.bbox.x * k, oy = 0.092 * T - cut.bbox.y * k;
+  const c = mkCanvas(T, T), x = ctx2d(c);
+  x.drawImage(a.img, ox, oy, a.w * k, a.h * k);
+  paintPhotoPrint(x, side, a, P, k, ox, oy);
+  x.globalCompositeOperation = 'destination-in';
+  x.drawImage(cut.mask, ox, oy, a.w * k, a.h * k);
+  const sil = mkCanvas(T, T), sx = ctx2d(sil);
+  sx.drawImage(cut.mask, ox, oy, a.w * k, a.h * k);
+  sx.globalCompositeOperation = 'source-in';
+  sx.fillStyle = '#000'; sx.fillRect(0, 0, T, T);
+  const S = Math.min(T, 800), sh = mkCanvas(S, S), shx = ctx2d(sh);
+  shx.filter = `blur(${S * 0.016}px)`;
+  shx.drawImage(sil, 0, 0, S, S);
+  const v = { c, sil, shadow: sh, center: (0.092 + (cut.bbox.h * k / T)) / 2 + 0.046 };
+  v.center = (0.092 + (0.092 + cut.bbox.h * k / T)) / 2;
+  _photoTex.set(side, { key, v });
+  return v;
+}
+/* fondo limpio (cemento) de la foto, cubriendo el lienzo */
+function drawPhotoBg(x, W, H) {
+  const { a } = photoFor('front'), cut = photoCutout(a);
+  if (!cut.bgHex) {
+    const c = mkCanvas(a.w, a.h), cx = ctx2d(c, true);
+    cx.drawImage(a.img, 0, 0);
+    const d = cx.getImageData(0, 0, a.w, a.h).data, m = ctx2d(cut.mask, true).getImageData(0, 0, a.w, a.h).data;
+    let r = 0, g = 0, b = 0, n = 0;
+    for (let p = 0; p < a.w * a.h; p++) if (m[p * 4 + 3] < 10) { r += d[p * 4]; g += d[p * 4 + 1]; b += d[p * 4 + 2]; n++; }
+    cut.bgHex = n ? rgbToHex(r / n * 1.04, g / n * 1.04, b / n * 1.04) : '#a9a59f';
+  }
+  x.drawImage(BG.concrete(W, H, cut.bgHex), 0, 0);
 }
 
 function composeMockup(W, H, layout) {
   const m = App.project.mockup;
   layout = layout || m.layout;
   const c = mkCanvas(W, H), x = ctx2d(c);
-  BG.draw(x, W, H, m);
   const bands = overlayBands(W, H, m);
   const u = Math.min(W, H);
   const pad = u * 0.04;
@@ -206,20 +312,14 @@ function composeMockup(W, H, layout) {
     Mockup._xf = null;
     const one = side => { Mockup._xf = drawPhotoShirt(x, side, 0, 0, W, H); };
     switch (layout) {
-      case 'both':
-        if (W / H > 0.95) { drawPhotoShirt(x, 'front', 0, 0, W / 2, H); drawPhotoShirt(x, 'back', W / 2, 0, W / 2, H); }
-        else { drawPhotoShirt(x, 'front', 0, 0, W, H / 2); drawPhotoShirt(x, 'back', 0, H / 2, W, H / 2); }
-        x.fillStyle = 'rgba(0,0,0,0.35)';
-        if (W / H > 0.95) x.fillRect(W / 2 - 1, 0, 2, H); else x.fillRect(0, H / 2 - 1, W, 2);
-        break;
-      case 'detail': drawPhotoShirt(x, sideHasContent('front') ? 'front' : 'back', 0, 0, W, H, 2.2); break;
-      case 'back': case 'hanger-back': one('back'); break;
-      case 'overlap': one(front ? 'front' : 'back'); break;
-      default: one('front');
+      case 'detail': drawPhotoShirt(x, sideHasContent('front') ? 'front' : 'back', 0, 0, W, H, 2.2); drawOverlays(x, W, H, m); return c;
+      case 'back': one('back'); drawOverlays(x, W, H, m); return c;
+      case 'front': one('front'); drawOverlays(x, W, H, m); return c;
     }
-    drawOverlays(x, W, H, m);
-    return c;
+    // composiciones con varias remeras: se recortan de la foto sobre su mismo cemento
+    drawPhotoBg(x, W, H);
   }
+  if (!usePhoto()) BG.draw(x, W, H, m);
   switch (layout) {
     case 'back':
     case 'front': {
@@ -365,7 +465,7 @@ const Mockup = {
       UI.btns([[ph.front.assetId ? 'Cambiar foto frente…' : 'Foto frente…', () => pickAsset(id => { ph.front.assetId = id; ph.on = true; App.commit(); rb(); })],
         [ph.back.assetId ? 'Cambiar foto espalda…' : 'Foto espalda (opcional)…', () => pickAsset(id => { ph.back.assetId = id; ph.on = true; App.commit(); rb(); })]])
     ];
-    if (ph.back.assetId) kids.push(UI.btns([['Quitar foto espalda', () => { ph.back.assetId = null; App.commit(); rb(); }]]));
+    kids.push(UI.btns([['Volver a las fotos STOCKSTORE', () => { Object.assign(ph.front, { assetId: 'builtin-front', x: 0.5, y: 0.47, w: 0.36, rot: 0 }); Object.assign(ph.back, { assetId: 'builtin-back', x: 0.5, y: 0.45, w: 0.38, rot: 0 }); ph.on = true; App.commit('Fotos de maqueta'); rb(); }]]));
     if (ph.on && ph.front.assetId) {
       kids.push(el('p', { class: 'hint' }, 'Arrastrá el estampado sobre la vista previa para moverlo; la rueda del mouse cambia el tamaño.'));
       for (const [s, n] of [['front', 'Frente'], ['back', 'Espalda']]) {
@@ -377,7 +477,7 @@ const Mockup = {
           UI.range('Rotación', P, 'rot', -30, 30, 0.1, { def: 0 }));
       }
       kids.push(UI.range('Realismo (pliegues)', ph, 'strength', 0, 1.5, 0.01, { def: 0.8 }));
-      kids.push(el('p', { class: 'hint' }, 'El video 360° sigue usando la remera dibujada (la foto no se puede girar).'));
+      kids.push(el('p', { class: 'hint' }, 'El video 360° recorta la remera de estas fotos y la hace girar sobre el mismo cemento.'));
     }
     return UI.sec('Maqueta con tu foto', kids, true, ph.on ? 'activa' : '');
   },

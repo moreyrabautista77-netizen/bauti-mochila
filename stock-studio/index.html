@@ -31,6 +31,7 @@
   <section class="view active" id="view-design">
     <aside id="toolbar"></aside>
     <div id="stageCol">
+      <div id="menubar"></div>
       <div id="optbar"></div>
       <div id="stageWrap">
         <canvas id="stage"></canvas>
@@ -45,7 +46,7 @@
     </div>
     <aside class="rpanel">
       <div id="layersBox">
-        <h4>Capas <span class="spacer"></span><span id="sideLbl" style="color:var(--acc)"></span></h4>
+        <h4><span class="ltabs" id="layerTabs"><button data-tab="layers" class="active">Capas</button><button data-tab="history">Historial</button></span><span class="spacer"></span><span id="sideLbl" style="color:var(--acc)"></span></h4>
         <div id="layersList"></div>
         <div class="lfoot" id="layersFoot"></div>
       </div>
@@ -86,10 +87,14 @@
 
 <script src="js/util.js"></script>
 <script src="js/state.js"></script>
+<script src="js/photos.js"></script>
 <script src="js/process.js"></script>
 <script src="js/shirt.js"></script>
+<script src="js/raster.js"></script>
+<script src="js/selection.js"></script>
 <script src="js/editor.js"></script>
 <script src="js/panels.js"></script>
+<script src="js/menus.js"></script>
 <script src="js/mockup.js"></script>
 <script src="js/anim.js"></script>
 <script src="js/main.js"></script>

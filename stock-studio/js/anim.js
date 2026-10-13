@@ -30,9 +30,16 @@ const Anim = {
   },
   duration() { const v = App.project.video; return v.period * v.loops; },
 
+  photoMode() { return App.project.video.photo && usePhoto(); },
   textures(T) {
-    const key = App.version + '|' + T;
+    const key = App.version + '|' + T + '|' + (this.photoMode() ? 1 : 0);
     if (this.texKey === key && this.tex) return this.tex;
+    if (this.photoMode()) {
+      const f = photoTex('front', T), b = photoTex('back', T);
+      this.tex = { front: f.c, back: b.c, dark: f.sil, darkBack: b.sil, shadow: f.shadow, T, photo: true };
+      this.texKey = key;
+      return this.tex;
+    }
     const front = Shirt.render('front', T);
     const fc = mkCanvas(T, T); ctx2d(fc).drawImage(front, 0, 0);
     const back = Shirt.render('back', T);
@@ -72,7 +79,8 @@ const Anim = {
   frame(x, W, H, t) {
     const v = App.project.video, m = App.project.mockup;
     x.setTransform(1, 0, 0, 1, 0, 0);
-    BG.draw(x, W, H, m);
+    if (this.photoMode()) drawPhotoBg(x, W, H);
+    else BG.draw(x, W, H, m);
     const bands = v.showTexts ? overlayBands(W, H, m) : { top: 0, bottom: 0 };
     const u = Math.min(W, H);
     const pad = u * 0.05;
@@ -101,7 +109,7 @@ const Anim = {
     x.globalAlpha = introK;
 
     const cos = Math.cos(th), sin = Math.sin(th);
-    const F = 2600, B = 38, thick = 10;
+    const F = 2600, B = 26, thick = 5;
     const N = 110, u0 = 40, u1 = 960, du = (u1 - u0) / N;
     const zf = uu => thick + B * (1 - Math.pow((uu - 500) / 470, 2));
     const proj = (X, Z) => {
@@ -124,7 +132,7 @@ const Anim = {
     }
     const faces = [
       { tex: tex.front, sgn: 1 },
-      { tex: tex.back, sgn: -1 }
+      { tex: tex.back, sgn: -1, dark: tex.darkBack }
     ];
     if (cos < 0) faces.reverse();
     // la cara más lejana primero
@@ -151,7 +159,7 @@ const Anim = {
         if (dark > 0.01) {
           x.save();
           x.globalAlpha *= Math.min(0.85, dark);
-          x.drawImage(tex.dark, srcX, 0, srcW, T, a.sx, dstY, w, dstH);
+          x.drawImage(f.dark || tex.dark, srcX, 0, srcW, T, a.sx, dstY, w, dstH);
           x.restore();
         }
       }
@@ -183,6 +191,7 @@ const Anim = {
       UI.range('Balanceo', v, 'sway', 0, 2, 0.01, { def: 0.5 }),
       UI.range('Zoom', v, 'zoom', 0.5, 1.4, 0.01, { def: 1 }),
       UI.range('Sombreado 3D', v, 'light', 0, 1.2, 0.01, { def: 0.6 }),
+      UI.check('Usar las fotos de maqueta (remera y cemento reales)', v, 'photo'),
       UI.check('Mostrar percha', v, 'hanger'),
       UI.check('Mostrar textos y logo', v, 'showTexts'),
       UI.check('Entrada animada (fade in)', v, 'intro'),

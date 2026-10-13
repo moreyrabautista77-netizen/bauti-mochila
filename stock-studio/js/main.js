@@ -3,8 +3,11 @@
    Arranque, vistas, atajos, archivos, exportación para imprenta
    ===================================================================== */
 App.setTool = function (t) {
+  if (this.tool !== t) Editor.cancelTool();
   this.tool = t;
-  $$('#toolbar .tool[data-tool]').forEach(b => b.classList.toggle('active', b.dataset.tool === t));
+  const g = groupOf(t);
+  if (g) Panels.groupCur[g[0]] = t;
+  Panels.buildToolbar();
   Panels.refreshOptbar();
   Editor.requestRender();
 };
@@ -99,21 +102,40 @@ function showHelp() {
     <li><b style="color:#fff">Video 360°:</b> la remera gira en la percha. Exportá a 9:16 para TikTok / Reels.</li>
     <li>Todo se guarda solo en este navegador. Usá <b>Guardar</b> para tener el archivo del proyecto.</li>
   </ol>
+  <h2>Herramientas (como Photopea)</h2>
+  <table>
+   <tr><td>V</td><td>Mover / transformación libre (esquinas: escalar, Shift: libre · lados: estirar)</td></tr>
+   <tr><td>M</td><td>Marco rectangular · Marco elíptico</td></tr>
+   <tr><td>L</td><td>Lazo · Lazo poligonal · Lazo magnético</td></tr>
+   <tr><td>W</td><td>Selección rápida · Varita mágica</td></tr>
+   <tr><td>C / I</td><td>Recortar · Cuentagotas</td></tr>
+   <tr><td>J</td><td>Corrector puntual · Pincel corrector · Parche · Ojos rojos</td></tr>
+   <tr><td>B</td><td>Pincel · Lápiz · Reemplazo de color</td></tr>
+   <tr><td>S</td><td>Tampón de clonar · Tampón de motivo (Alt+clic = muestra)</td></tr>
+   <tr><td>E</td><td>Borrador · Restaurar · Borrador de fondos · Borrador mágico</td></tr>
+   <tr><td>G</td><td>Degradado · Bote de pintura</td></tr>
+   <tr><td>Y</td><td>Desenfocar · Enfocar · Dedo</td></tr>
+   <tr><td>O</td><td>Sobreexponer · Subexponer · Esponja</td></tr>
+   <tr><td>P / A</td><td>Pluma · Pluma libre · Selección directa (mover puntos)</td></tr>
+   <tr><td>T / U</td><td>Texto horizontal/vertical · Formas</td></tr>
+   <tr><td>H / R / Z</td><td>Mano · Rotar vista · Zoom</td></tr>
+   <tr><td>Shift + letra</td><td>Pasa a la siguiente herramienta del grupo</td></tr>
+  </table>
   <h2>Atajos</h2>
   <table>
-   <tr><td>V / H / E / R / W / T / I</td><td>Mover · Mano · Borrador · Restaurar · Varita · Texto · Cuentagotas</td></tr>
-   <tr><td>Espacio + arrastrar</td><td>Desplazar el lienzo</td></tr>
-   <tr><td>Rueda del mouse</td><td>Zoom</td></tr>
-   <tr><td>Ctrl+0</td><td>Ajustar a pantalla</td></tr>
+   <tr><td>Shift / Alt al seleccionar</td><td>Sumar / restar a la selección</td></tr>
+   <tr><td>Ctrl+A / Ctrl+D / Ctrl+Shift+I</td><td>Seleccionar todo / deseleccionar / invertir</td></tr>
+   <tr><td>Ctrl+J</td><td>Duplicar capa (con selección: copia esa parte a capa nueva)</td></tr>
+   <tr><td>Supr</td><td>Borrar lo seleccionado (sin selección: borra la capa)</td></tr>
+   <tr><td>Alt+Supr / Ctrl+Supr</td><td>Rellenar con color principal / secundario</td></tr>
+   <tr><td>Ctrl+Shift+N</td><td>Nueva capa vacía</td></tr>
+   <tr><td>Ctrl+E / Ctrl+Shift+E</td><td>Combinar hacia abajo / combinar visibles</td></tr>
+   <tr><td>Ctrl+Alt+G</td><td>Máscara de recorte</td></tr>
+   <tr><td>X / D</td><td>Intercambiar colores / colores por defecto</td></tr>
    <tr><td>[ y ]</td><td>Tamaño del pincel</td></tr>
-   <tr><td>Flechas (Shift ×10)</td><td>Mover capa</td></tr>
-   <tr><td>Shift al rotar</td><td>Girar de a 15°</td></tr>
-   <tr><td>Alt + arrastrar</td><td>Duplicar capa</td></tr>
-   <tr><td>Ctrl+Z / Ctrl+Y</td><td>Deshacer / Rehacer</td></tr>
-   <tr><td>Ctrl+D</td><td>Duplicar capa</td></tr>
-   <tr><td>Ctrl+C / Ctrl+V</td><td>Copiar capa / Pegar capa o imagen</td></tr>
-   <tr><td>Ctrl+[ / Ctrl+]</td><td>Bajar / subir capa</td></tr>
-   <tr><td>Supr</td><td>Borrar capa</td></tr>
+   <tr><td>Espacio + arrastrar · rueda</td><td>Desplazar · zoom</td></tr>
+   <tr><td>Enter / Esc</td><td>Terminar pluma o lazo poligonal / cancelar</td></tr>
+   <tr><td>Ctrl+Z / Ctrl+Y</td><td>Deshacer / rehacer (o clic en el Historial)</td></tr>
    <tr><td>Ctrl+S / Ctrl+O</td><td>Guardar / abrir proyecto</td></tr>
    <tr><td>Tab</td><td>Cambiar Frente ↔ Espalda</td></tr>
   </table>
@@ -162,7 +184,12 @@ async function loadFontFile(f) {
 /* ---------- arranque ---------- */
 async function boot() {
   Fonts.init();
+  try {
+    await Assets.addImage(BUILTIN_PHOTOS.front, { id: 'builtin-front', maxSide: 99999 });
+    await Assets.addImage(BUILTIN_PHOTOS.back, { id: 'builtin-back', maxSide: 99999 });
+  } catch (e) { console.warn('fotos de maqueta', e); }
   App.project = Defaults.project();
+  Menus.build();
   Panels.init();
   Editor.init();
   History.reset();
@@ -233,13 +260,28 @@ async function boot() {
     const tag = document.activeElement?.tagName;
     if (/INPUT|TEXTAREA|SELECT/.test(tag) && e.key !== 'Escape') return;
     const ctrl = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
-    if (e.key === 'Escape') { $('#helpModal').classList.remove('show'); document.activeElement?.blur(); if (App.view === 'design') App.select(null); return; }
+    if (e.key === 'Escape') {
+      $('#helpModal').classList.remove('show'); $('#menuDrop')?.remove(); $('#flyout')?.remove(); document.activeElement?.blur();
+      if (App.view === 'design') { if (Editor.pen || Editor.poly || Editor.drag) Editor.cancelTool(); else if (Sel.active) Sel.none(); else App.select(null); }
+      return;
+    }
     if (ctrl && k === 'z' && !e.shiftKey) { e.preventDefault(); History.undo(); return; }
     if (ctrl && (k === 'y' || (k === 'z' && e.shiftKey))) { e.preventDefault(); History.redo(); return; }
     if (ctrl && k === 's') { e.preventDefault(); saveProject(); return; }
     if (ctrl && k === 'o') { e.preventDefault(); $('#btnOpen').click(); return; }
     if (App.view !== 'design') { if (e.key === ' ' && App.view === 'video') { e.preventDefault(); $('#vidBar button').click(); } return; }
-    if (ctrl && k === 'd') { e.preventDefault(); Panels.duplicate(); return; }
+    if (e.key === 'Enter') { if (Editor.pen) { Editor.finishPen(false); return; } if (Editor.poly) { Editor.finishPoly(); return; } }
+    if (ctrl && e.shiftKey && k === 'n') { e.preventDefault(); Menus.run('newLayer'); return; }
+    if (ctrl && e.shiftKey && k === 'i') { e.preventDefault(); Menus.run('selInvert'); return; }
+    if (ctrl && e.shiftKey && k === 'e') { e.preventDefault(); Menus.run('mergeVisible'); return; }
+    if (ctrl && e.altKey && k === 'g') { e.preventDefault(); Menus.run('clip'); return; }
+    if (ctrl && k === 'a') { e.preventDefault(); Sel.all(); return; }
+    if (ctrl && k === 'd') { e.preventDefault(); Sel.none(); return; }
+    if (ctrl && k === 'j') { e.preventDefault(); duplicateOrCopySelection(); return; }
+    if (ctrl && k === 'e') { e.preventDefault(); Panels.mergeDown(); return; }
+    if (ctrl && k === 't') { e.preventDefault(); App.setTool('move'); return; }
+    if (ctrl && (e.key === 'Delete' || e.key === 'Backspace')) { e.preventDefault(); fillSelection(App.colors.bg); return; }
+    if (e.altKey && (e.key === 'Delete' || e.key === 'Backspace')) { e.preventDefault(); fillSelection(App.colors.fg); return; }
     if (ctrl && k === 'c') { const L = App.selected(); if (L) { App.clipboard = deepClone(L); toast('Capa copiada'); } return; }
     if (ctrl && k === '0') { e.preventDefault(); Editor.fit(); return; }
     if (ctrl && (k === '=' || k === '+')) { e.preventDefault(); Editor.zoomBy(1.25); return; }
@@ -248,7 +290,7 @@ async function boot() {
     if (ctrl && e.key === '[') { e.preventDefault(); Panels.reorder(-1); return; }
     if (ctrl) return;
     if (e.key === ' ') { e.preventDefault(); Editor.space = true; Editor.canvas.style.cursor = 'grab'; return; }
-    if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); Panels.remove(); return; }
+    if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); clearSelectionOrLayer(); return; }
     if (e.key === 'Tab') { e.preventDefault(); App.side = App.side === 'front' ? 'back' : 'front'; App.sel = null; Panels.refreshAll(); return; }
     if (e.key.startsWith('Arrow')) {
       const L = App.selected();
@@ -259,13 +301,22 @@ async function boot() {
       if (e.key === 'ArrowUp') L.y -= s; if (e.key === 'ArrowDown') L.y += s;
       App.changed();
       clearTimeout(App._nudge);
-      App._nudge = setTimeout(() => App.commit(), 400);
+      App._nudge = setTimeout(() => App.commit('Mover'), 400);
       return;
     }
-    if (e.key === '[') { App.brush.size = Math.max(4, Math.round(App.brush.size / 1.2)); Panels.refreshOptbar(); Editor.requestRender(); return; }
-    if (e.key === ']') { App.brush.size = Math.min(500, Math.round(App.brush.size * 1.2)); Panels.refreshOptbar(); Editor.requestRender(); return; }
-    const map = { v: 'move', h: 'hand', e: 'erase', r: 'restore', w: 'wand', t: 'text', i: 'picker' };
-    if (map[k]) App.setTool(map[k]);
+    if (e.key === '[') { App.brush.size = Math.max(2, Math.round(App.brush.size / 1.2)); Panels.refreshOptbar(); Editor.requestRender(); return; }
+    if (e.key === ']') { App.brush.size = Math.min(600, Math.round(App.brush.size * 1.2)); Panels.refreshOptbar(); Editor.requestRender(); return; }
+    if (k === 'x') { Panels.swapColors(); return; }
+    if (k === 'd') { Panels.resetColors(); return; }
+    /* atajo de grupo: repetir la tecla recorre las herramientas del grupo */
+    const keyGroups = { v: ['move'], m: ['marquee', 'ellipseSel'], l: ['lasso', 'polyLasso', 'magLasso'], w: ['quickSel', 'wandSel'], c: ['crop'], i: ['picker'],
+      j: ['spotHeal', 'heal', 'patch', 'redEye'], b: ['brush', 'pencil', 'colorReplace'], s: ['clone', 'pattern'], e: ['erase', 'restore', 'bgErase', 'magicErase'],
+      g: ['gradient', 'bucket'], o: ['dodge', 'burn', 'sponge'], p: ['pen', 'freePen'], t: ['text', 'vtext'], a: ['direct'], u: ['shape'], h: ['hand'], r: ['rotView'], z: ['zoom'], y: ['blur', 'sharpen', 'smudge'] };
+    const g = keyGroups[k];
+    if (g) {
+      const i = g.indexOf(App.tool);
+      App.setTool(e.shiftKey && i >= 0 ? g[(i + 1) % g.length] : (i >= 0 ? App.tool : (Panels.groupCur[groupOf(g[0])[0]] || g[0])));
+    }
   });
   window.addEventListener('keyup', e => { if (e.key === ' ') { Editor.space = false; Editor.canvas.style.cursor = 'default'; } });
   $('#stage').addEventListener('contextmenu', e => e.preventDefault());

@@ -63,11 +63,16 @@ const Assets = {
 /* ---------- valores por defecto ---------- */
 const Defaults = {
   base() {
-    return { visible: true, locked: false, opacity: 1, blend: 'source-over', x: DESIGN_W / 2, y: DESIGN_H / 2, scale: 1, rot: 0, flipX: false, flipY: false };
+    return {
+      visible: true, locked: false, opacity: 1, blend: 'source-over', x: DESIGN_W / 2, y: DESIGN_H / 2, scale: 1, rot: 0, flipX: false, flipY: false,
+      sx: 1, sy: 1, clip: false, warp: { type: 'none', amount: 0.5 },
+      style: { shadow: false, shColor: '#000000', shOpacity: 0.6, shBlur: 30, shX: 18, shY: 24, glow: false, glColor: '#ff7a1a', glOpacity: 0.8, glBlur: 50,
+        overlay: false, ovColor: '#ff7a1a', ovOpacity: 1, grad: false, grA: '#ff7a1a', grB: '#d0202c', grAngle: 90, grOpacity: 1 }
+    };
   },
   image() {
     return Object.assign(this.base(), {
-      type: 'image', name: 'Imagen', assetId: null, maskId: null, w: 100, h: 100,
+      type: 'image', name: 'Imagen', assetId: null, maskId: null, pix: 0, w: 100, h: 100,
       crop: { l: 0, t: 0, r: 0, b: 0 },
       adj: { exposure: 0, brightness: 0, contrast: 0, black: 0, white: 1, gamma: 1, saturation: 0, sharpen: 0, blur: 0, invert: false },
       fx: { mode: 'color', ink: '#f1e7d3', invertTone: false, cell: 30, angle: 45, shape: 'circle', dotScale: 1, minDot: 0.05,
@@ -79,28 +84,41 @@ const Defaults = {
   },
   text() {
     return Object.assign(this.base(), {
-      type: 'text', name: 'Texto', text: 'TEXTO', font: Fonts.pick('Bahnschrift', 'Arial Black', 'Impact'), weight: 700, italic: false,
+      type: 'text', name: 'Texto', text: 'TEXTO', vertical: false, font: Fonts.pick('Bahnschrift', 'Arial Black', 'Impact'), weight: 700, italic: false,
       size: 260, color: '#f1e7d3', spacing: 0, lineHeight: 1.05, align: 'center', strokeColor: '#000000', strokeWidth: 0, arc: 0,
       post: { outline: 0, outlineColor: '#c9a27a', distress: 0, distressScale: 1 }
     });
   },
   shape() {
     return Object.assign(this.base(), {
-      type: 'shape', name: 'Forma', shape: 'rect', w: 1200, h: 600, fillOn: true, fill: '#f1e7d3', strokeColor: '#f1e7d3', strokeWidth: 0, radius: 0,
+      type: 'shape', name: 'Forma', shape: 'rect', w: 1200, h: 600, fillOn: true, fill: '#f1e7d3', strokeColor: '#f1e7d3', strokeWidth: 0, radius: 0, sides: 6,
       post: { outline: 0, outlineColor: '#c9a27a', distress: 0, distressScale: 1 }
     });
+  },
+  path() {
+    return Object.assign(this.base(), {
+      type: 'path', name: 'Trazado', pts: [], closed: true, smooth: false, fillOn: true, fill: '#f1e7d3', strokeColor: '#f1e7d3', strokeWidth: 0,
+      post: { outline: 0, outlineColor: '#c9a27a', distress: 0, distressScale: 1 }
+    });
+  },
+  adjust() {
+    return {
+      type: 'adjust', name: 'Ajuste', visible: true, locked: false, opacity: 1, kind: 'bc',
+      brightness: 100, contrast: 100, saturate: 100, hue: 0, grayscale: 0, sepia: 0, invert: 0, blur: 0, threshold: 0, posterize: 0,
+      halftone: false, htCell: 30, htAngle: 45, htShape: 'circle', htInk: '#f1e7d3', htInvert: false, htColor: false
+    };
   },
   mockup() {
     return {
       format: 'post', layout: 'front', bg: 'concrete', bgColor: '#cdc8c0', bgColor2: '#8f8a83', bgAssetId: null,
       shirtScale: 1, printScale: 1, printYFront: 0, printYBack: 0, wrinkles: 0.7, shadow: 0.55, quality: 1,
       logoAssetId: null, logoPos: 'top', logoSize: 0.32, title: '', subtitle: '', price: '', handle: '@stockstore.arg', badge: '',
-      photo: { on: false, strength: 0.8, front: { assetId: null, x: 0.5, y: 0.45, w: 0.36, rot: 0 }, back: { assetId: null, x: 0.5, y: 0.42, w: 0.38, rot: 0 } },
+      photo: { on: true, strength: 0.8, front: { assetId: 'builtin-front', x: 0.5, y: 0.47, w: 0.36, rot: 0 }, back: { assetId: 'builtin-back', x: 0.5, y: 0.45, w: 0.38, rot: 0 } },
       textColor: 'auto', font: Fonts.pick('Bahnschrift', 'Arial Black', 'Impact'), accent: '#ff7a1a'
     };
   },
   video() {
-    return { format: 'story', motion: 'spinPause', period: 4, loops: 2, hanger: true, sway: 0.5, zoom: 1, light: 0.6, showTexts: true, fps: 30, intro: true };
+    return { format: 'story', motion: 'spinPause', period: 4, loops: 2, hanger: true, sway: 0.5, zoom: 1, light: 0.6, showTexts: true, fps: 30, intro: true, photo: true };
   },
   project() {
     return {
@@ -122,6 +140,8 @@ function fillDefaults(obj, def) {
 }
 function normalizeProject(p) {
   fillDefaults(p, Defaults.project());
+  const ph = p.mockup.photo;
+  if (!ph.front.assetId && !ph.back.assetId) { ph.front.assetId = 'builtin-front'; ph.back.assetId = 'builtin-back'; ph.on = true; ph.front.y = 0.47; ph.back.y = 0.45; }
   for (const s of ['front', 'back']) for (const L of p.sides[s].layers) fillDefaults(L, Defaults[L.type] ? Defaults[L.type]() : {});
   return p;
 }
@@ -137,6 +157,10 @@ const App = {
   interactive: false,
   brush: { size: 80, hard: 0.55 },
   wand: { tol: 34, global: false },
+  colors: { fg: '#f1e7d3', bg: '#141414' },
+  /* opciones de herramientas */
+  t: { opacity: 1, strength: 0.5, tol: 32, contiguous: true, spongeMode: 'desat', gradType: 'linear', gradReverse: false, gradTransparent: false,
+    pattern: 'dots', shape: 'rect', sides: 6, sampleAll: false, feather: 0 },
   clipboard: null,
   _iT: 0,
   layers(side) { return this.project.sides[side || this.side].layers; },
@@ -163,12 +187,12 @@ const App = {
     else if (this.view === 'video') Anim.invalidate();
   },
   /* cambio confirmado: historial + autoguardado */
-  commit() {
+  commit(label) {
     const dark = lumHex(this.project.shirt.color) < 0.45;
     if (this._dark !== undefined && dark !== this._dark) adaptInk(dark);
     this._dark = dark;
     this.version++;
-    History.push();
+    History.push(label);
     Panels.refreshLayers();
     Persist.schedule();
     Proc.prune();
@@ -186,12 +210,12 @@ const App = {
 /* ---------- historial (deshacer / rehacer) ---------- */
 const History = {
   stack: [], idx: -1,
-  snap() { return { p: JSON.stringify(App.project), side: App.side, sel: App.sel }; },
-  reset() { this.stack = [this.snap()]; this.idx = 0; this.ui(); },
-  push() {
-    const s = this.snap();
+  snap(label) { return { p: JSON.stringify(App.project), side: App.side, sel: App.sel, label: label || 'Edición', t: Date.now() }; },
+  reset() { this.stack = [this.snap('Abrir')]; this.idx = 0; this.ui(); },
+  push(label) {
+    const s = this.snap(label);
     const cur = this.stack[this.idx];
-    if (cur && cur.p === s.p) { this.stack[this.idx] = s; return; }
+    if (cur && cur.p === s.p) { s.label = cur.label; this.stack[this.idx] = s; return; }
     this.stack.splice(this.idx + 1);
     this.stack.push(s);
     if (this.stack.length > 120) this.stack.shift();
@@ -203,6 +227,7 @@ const History = {
     // si el cambio fue en el otro lado, mostrar ese lado
     if (s.side !== App.side && JSON.stringify(np.sides[App.side]) === JSON.stringify(App.project.sides[App.side])) App.side = s.side;
     App.project = np;
+    syncAllRevs();
     App._dark = lumHex(np.shirt.color) < 0.45;
     App.sel = np.sides[App.side].layers.some(l => l.id === s.sel) ? s.sel : (np.sides[App.side].layers.some(l => l.id === App.sel) ? App.sel : null);
     App.version++;
@@ -210,12 +235,14 @@ const History = {
     Persist.schedule();
     App.renderActive();
   },
+  go(i) { if (i < 0 || i >= this.stack.length || i === this.idx) return; this.idx = i; this.restore(this.stack[i]); this.ui(); },
   undo() { if (this.idx > 0) { this.idx--; this.restore(this.stack[this.idx]); } this.ui(); },
   redo() { if (this.idx < this.stack.length - 1) { this.idx++; this.restore(this.stack[this.idx]); } this.ui(); },
   ui() {
     const u = $('#btnUndo'), r = $('#btnRedo');
     if (u) u.disabled = this.idx <= 0;
     if (r) r.disabled = this.idx >= this.stack.length - 1;
+    if (typeof Panels !== 'undefined' && Panels.refreshHistory) Panels.refreshHistory();
   }
 };
 
@@ -239,6 +266,7 @@ const Persist = {
     if (p.mockup.logoAssetId) ids.add(p.mockup.logoAssetId);
     if (p.mockup.bgAssetId) ids.add(p.mockup.bgAssetId);
     for (const s of ['front', 'back']) if (p.mockup.photo && p.mockup.photo[s].assetId) ids.add(p.mockup.photo[s].assetId);
+    for (const id of [...ids]) if (String(id).startsWith('builtin')) ids.delete(id);
     for (const f of p.fonts) ids.add(f.assetId);
     return ids;
   },
@@ -283,6 +311,7 @@ const Persist = {
       } catch (e) { console.warn('asset', id, e); }
     }
     const p = normalizeProject(data.project);
+    for (const s of ['front', 'back']) for (const L of p.sides[s].layers) if (L.assetId) { const a = Assets.get(L.assetId); if (a && a.kind === 'img') { a.revs = a.revs || []; a.cur = L.pix || 0; } }
     for (const f of p.fonts) { const a = Assets.get(f.assetId); if (a) await Fonts.addFromURL(f.family, a.url); }
     App.project = p;
     App._dark = lumHex(p.shirt.color) < 0.45;
