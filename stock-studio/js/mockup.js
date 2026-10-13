@@ -121,6 +121,75 @@ function placeShirt(x, side, cx, cy, S, m, opts = {}) {
   if (opts.hanger) Shirt.drawHanger(x, cx, top + 96 * S / 1000, S / 1000);
 }
 
+/* ---------- maqueta con foto propia ---------- */
+function photoFor(side) {
+  const ph = App.project.mockup.photo;
+  const a = Assets.get(ph[side].assetId) || Assets.get(ph[side === 'front' ? 'back' : 'front'].assetId);
+  return a ? { a, P: ph[side] } : null;
+}
+const usePhoto = () => App.project.mockup.photo.on && !!photoFor('front');
+
+/* el estampado toma las luces y pliegues de la foto */
+const _shadeCache = new Map();
+function photoShade(tex, a, P, strength, side) {
+  const key = [App.version, P.x, P.y, P.w, P.rot, strength, tex.width, a.w].join('|');
+  const hit = _shadeCache.get(side);
+  if (hit && hit.key === key) return hit.c;
+  const f = Math.min(1, 900 / Math.max(tex.width, tex.height));
+  const w = Math.max(1, Math.round(tex.width * f)), h = Math.max(1, Math.round(tex.height * f));
+  const c = mkCanvas(w, h), x = ctx2d(c, true);
+  x.drawImage(tex, 0, 0, w, h);
+  if (strength > 0) {
+    const pw = P.w * a.w, ph = pw * DESIGN_H / DESIGN_W;
+    const s = mkCanvas(w, h), sx = ctx2d(s, true);
+    sx.filter = 'blur(1.5px)';
+    sx.translate(w / 2, h / 2);
+    sx.scale(w / pw, h / ph);
+    sx.rotate(-P.rot * Math.PI / 180);
+    sx.drawImage(a.img, -P.x * a.w, -P.y * a.h);
+    const sd = sx.getImageData(0, 0, w, h).data;
+    const id = x.getImageData(0, 0, w, h), d = id.data;
+    let sum = 0, n = 0;
+    for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 20) { sum += 0.299 * sd[i] + 0.587 * sd[i + 1] + 0.114 * sd[i + 2]; n++; }
+    const mean = Math.max(4, n ? sum / n : 128);
+    for (let i = 0; i < d.length; i += 4) {
+      if (!d[i + 3]) continue;
+      const l = 0.299 * sd[i] + 0.587 * sd[i + 1] + 0.114 * sd[i + 2];
+      const k = Math.pow(clamp((l + 2) / mean, 0.3, 1.8), strength);
+      d[i] *= k; d[i + 1] *= k; d[i + 2] *= k;
+    }
+    x.putImageData(id, 0, 0);
+  }
+  _shadeCache.set(side, { key, c });
+  return c;
+}
+
+/* dibuja la foto (cubriendo el rectángulo) + el estampado. zoom>1 centra en el estampado */
+function drawPhotoShirt(x, side, rx, ry, rw, rh, zoom = 1) {
+  const pf = photoFor(side);
+  if (!pf) return null;
+  const { a, P } = pf;
+  const m = App.project.mockup;
+  const s = Math.max(rw / a.w, rh / a.h) * zoom;
+  let ox = rx + rw / 2 - a.w * s / 2, oy = ry + rh / 2 - a.h * s / 2;
+  if (zoom > 1) { ox = rx + rw / 2 - P.x * a.w * s; oy = ry + rh / 2 - P.y * a.h * s; }
+  x.save();
+  x.beginPath(); x.rect(rx, ry, rw, rh); x.clip();
+  x.drawImage(a.img, ox, oy, a.w * s, a.h * s);
+  const pw = P.w * a.w * s, ph = pw * DESIGN_H / DESIGN_W;
+  const cx = ox + P.x * a.w * s, cy = oy + P.y * a.h * s;
+  if (sideHasContent(side)) {
+    const q = [0.0625, 0.125, 0.1875, 0.25, 0.375, 0.5, 0.75, 1].find(v => v >= pw * 1.3 / DESIGN_W) || 1;
+    const tex = Shirt.printTexture(renderSide(side, q));
+    x.translate(cx, cy);
+    x.rotate(P.rot * Math.PI / 180);
+    x.globalAlpha = 0.96;
+    x.drawImage(photoShade(tex, a, P, m.photo.strength, side), -pw / 2, -ph / 2, pw, ph);
+  }
+  x.restore();
+  return { side, a, P, s, ox, oy, pw, ph, cx, cy };
+}
+
 function composeMockup(W, H, layout) {
   const m = App.project.mockup;
   layout = layout || m.layout;
@@ -133,6 +202,24 @@ function composeMockup(W, H, layout) {
   const cx = bx + bw / 2, cy = by + bh / 2;
   const k = m.shirtScale;
   const front = sideHasContent('front') || !sideHasContent('back');
+  if (usePhoto()) {
+    Mockup._xf = null;
+    const one = side => { Mockup._xf = drawPhotoShirt(x, side, 0, 0, W, H); };
+    switch (layout) {
+      case 'both':
+        if (W / H > 0.95) { drawPhotoShirt(x, 'front', 0, 0, W / 2, H); drawPhotoShirt(x, 'back', W / 2, 0, W / 2, H); }
+        else { drawPhotoShirt(x, 'front', 0, 0, W, H / 2); drawPhotoShirt(x, 'back', 0, H / 2, W, H / 2); }
+        x.fillStyle = 'rgba(0,0,0,0.35)';
+        if (W / H > 0.95) x.fillRect(W / 2 - 1, 0, 2, H); else x.fillRect(0, H / 2 - 1, W, 2);
+        break;
+      case 'detail': drawPhotoShirt(x, sideHasContent('front') ? 'front' : 'back', 0, 0, W, H, 2.2); break;
+      case 'back': case 'hanger-back': one('back'); break;
+      case 'overlap': one(front ? 'front' : 'back'); break;
+      default: one('front');
+    }
+    drawOverlays(x, W, H, m);
+    return c;
+  }
   switch (layout) {
     case 'back':
     case 'front': {
@@ -179,7 +266,39 @@ function composeMockup(W, H, layout) {
 }
 
 const Mockup = {
-  needs: false, timer: 0,
+  needs: false, timer: 0, _xf: null, drag: null,
+  initPhotoDrag() {
+    const cv = $('#mockCanvas');
+    const toPx = e => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * cv.width / r.width, y: (e.clientY - r.top) * cv.height / r.height }; };
+    cv.addEventListener('pointerdown', e => {
+      const xf = this._xf;
+      if (!usePhoto() || !xf) return;
+      const p = toPx(e);
+      cv.setPointerCapture(e.pointerId);
+      this.drag = { p, x0: xf.P.x, y0: xf.P.y, xf };
+    });
+    cv.addEventListener('pointermove', e => {
+      const d = this.drag;
+      cv.style.cursor = usePhoto() && this._xf ? 'move' : 'default';
+      if (!d) return;
+      const p = toPx(e);
+      d.xf.P.x = clamp(d.x0 + (p.x - d.p.x) / (d.xf.a.w * d.xf.s), 0, 1);
+      d.xf.P.y = clamp(d.y0 + (p.y - d.p.y) / (d.xf.a.h * d.xf.s), 0, 1);
+      App.changed(true);
+    });
+    const up = () => { if (this.drag) { this.drag = null; App.commit(); this.buildPanel(); } };
+    cv.addEventListener('pointerup', up);
+    cv.addEventListener('pointercancel', up);
+    cv.addEventListener('wheel', e => {
+      const xf = this._xf;
+      if (!usePhoto() || !xf) return;
+      e.preventDefault();
+      xf.P.w = clamp(xf.P.w * Math.exp(-e.deltaY * 0.001), 0.05, 1.2);
+      App.changed(true);
+      clearTimeout(this._wt);
+      this._wt = setTimeout(() => { App.commit(); this.buildPanel(); }, 400);
+    }, { passive: false });
+  },
   requestRender() {
     clearTimeout(this.timer);
     this.timer = setTimeout(() => this.render(), App.interactive ? 60 : 20);
@@ -224,6 +343,7 @@ const Mockup = {
       UI.range('Arrugas', m, 'wrinkles', 0, 1.5, 0.01, { def: 0.7 }),
       UI.range('Sombra', m, 'shadow', 0, 1, 0.01, { def: 0.55 })
     ], true));
+    P.append(this.photoSection(rb));
     const shirt = App.project.shirt;
     P.append(UI.sec('Remera', [UI.color('Color', shirt, 'color', { swatches: ['#141414', '#f3f2ee', '#8e8e90', '#e8dfca', '#4b3a2c', '#1b2236'] })], true));
     P.append(this.bgSection(rb));
@@ -236,6 +356,30 @@ const Mockup = {
       el('p', { class: 'hint' }, 'Para el archivo de imprenta (PNG transparente) usá “Exportar para imprimir” en la pestaña Diseño.')
     ], true));
     P.scrollTop = st;
+  },
+  photoSection(rb) {
+    const ph = App.project.mockup.photo;
+    const kids = [
+      el('p', { class: 'hint' }, 'Usá tu propia foto de la remera lisa (como las de tu catálogo). El estampado se apoya encima y toma los pliegues de la foto.'),
+      UI.check('Usar mi foto como maqueta', ph, 'on', { onChange: rb }),
+      UI.btns([[ph.front.assetId ? 'Cambiar foto frente…' : 'Foto frente…', () => pickAsset(id => { ph.front.assetId = id; ph.on = true; App.commit(); rb(); })],
+        [ph.back.assetId ? 'Cambiar foto espalda…' : 'Foto espalda (opcional)…', () => pickAsset(id => { ph.back.assetId = id; ph.on = true; App.commit(); rb(); })]])
+    ];
+    if (ph.back.assetId) kids.push(UI.btns([['Quitar foto espalda', () => { ph.back.assetId = null; App.commit(); rb(); }]]));
+    if (ph.on && ph.front.assetId) {
+      kids.push(el('p', { class: 'hint' }, 'Arrastrá el estampado sobre la vista previa para moverlo; la rueda del mouse cambia el tamaño.'));
+      for (const [s, n] of [['front', 'Frente'], ['back', 'Espalda']]) {
+        const P = ph[s];
+        kids.push(el('b', { style: 'font-size:12px;margin-top:4px' }, n),
+          UI.range('Posición X', P, 'x', 0, 1, 0.001, { dec: 3 }),
+          UI.range('Posición Y', P, 'y', 0, 1, 0.001, { dec: 3 }),
+          UI.range('Ancho', P, 'w', 0.05, 1.2, 0.001, { dec: 3 }),
+          UI.range('Rotación', P, 'rot', -30, 30, 0.1, { def: 0 }));
+      }
+      kids.push(UI.range('Realismo (pliegues)', ph, 'strength', 0, 1.5, 0.01, { def: 0.8 }));
+      kids.push(el('p', { class: 'hint' }, 'El video 360° sigue usando la remera dibujada (la foto no se puede girar).'));
+    }
+    return UI.sec('Maqueta con tu foto', kids, true, ph.on ? 'activa' : '');
   },
   bgSection(rb) {
     const m = App.project.mockup;

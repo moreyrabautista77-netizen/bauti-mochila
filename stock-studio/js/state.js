@@ -95,6 +95,7 @@ const Defaults = {
       format: 'post', layout: 'front', bg: 'concrete', bgColor: '#cdc8c0', bgColor2: '#8f8a83', bgAssetId: null,
       shirtScale: 1, printScale: 1, printYFront: 0, printYBack: 0, wrinkles: 0.7, shadow: 0.55, quality: 1,
       logoAssetId: null, logoPos: 'top', logoSize: 0.32, title: '', subtitle: '', price: '', handle: '@stockstore.arg', badge: '',
+      photo: { on: false, strength: 0.8, front: { assetId: null, x: 0.5, y: 0.45, w: 0.36, rot: 0 }, back: { assetId: null, x: 0.5, y: 0.42, w: 0.38, rot: 0 } },
       textColor: 'auto', font: Fonts.pick('Bahnschrift', 'Arial Black', 'Impact'), accent: '#ff7a1a'
     };
   },
@@ -237,6 +238,7 @@ const Persist = {
     for (const s of ['front', 'back']) for (const L of p.sides[s].layers) { if (L.assetId) ids.add(L.assetId); if (L.maskId) ids.add(L.maskId); }
     if (p.mockup.logoAssetId) ids.add(p.mockup.logoAssetId);
     if (p.mockup.bgAssetId) ids.add(p.mockup.bgAssetId);
+    for (const s of ['front', 'back']) if (p.mockup.photo && p.mockup.photo[s].assetId) ids.add(p.mockup.photo[s].assetId);
     for (const f of p.fonts) ids.add(f.assetId);
     return ids;
   },

@@ -25,6 +25,7 @@ El proyecto se autoguarda en el navegador. Con **Guardar** descargás un archivo
 **Maqueta y posts**
 - Post 4:5, cuadrado, story / TikTok 9:16, horizontal.
 - Vistas: frente, espalda, ambas, superpuestas, en percha, detalle del estampado.
+- **Maqueta con tu foto**: subí la foto de tu remera lisa (frente y, opcional, espalda); arrastrás el estampado encima, la rueda cambia el tamaño y el estampado toma los pliegues de la foto.
 - Fondo cemento (como tus fotos), liso, degradé, estudio o tu propia foto.
 - Logo, título, subtítulo, precio, usuario y etiqueta (NEW / SALE).
 - Descarga PNG/JPG, carrusel completo o todos los formatos juntos.

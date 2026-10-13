@@ -96,9 +96,9 @@ details.sec>summary:before{content:"▸";color:var(--muted);transition:transform
 details.sec[open]>summary:before{transform:rotate(90deg)}
 details.sec>summary .tag{margin-left:auto;font-size:10px;color:var(--acc);font-weight:500}
 .secbody{padding:0 12px 12px;display:flex;flex-direction:column;gap:9px}
-.ctl{display:grid;grid-template-columns:96px 1fr 54px;align-items:center;gap:8px}
+.ctl{display:grid;grid-template-columns:96px 1fr 62px;align-items:center;gap:8px}
 .ctl>label{color:var(--muted);font-size:12px;user-select:none}
-.ctl .num{width:54px;padding:3px 4px;text-align:right;font-size:12px}
+.ctl .num{width:62px;padding:3px 4px;text-align:right;font-size:12px}
 .ctl2{display:grid;grid-template-columns:96px 1fr;align-items:center;gap:8px}
 .ctl2>label{color:var(--muted);font-size:12px}
 .row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}

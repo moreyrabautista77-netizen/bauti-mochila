@@ -168,6 +168,7 @@ async function boot() {
   History.reset();
   Panels.refreshAll();
   Anim.start();
+  Mockup.initPhotoDrag();
   for (const id of ['#mockCanvas', '#vidCanvas']) new ResizeObserver(() => fitPreview($(id))).observe($(id).parentElement);
 
   $$('#viewTabs button').forEach(b => (b.onclick = () => App.setView(b.dataset.view)));
